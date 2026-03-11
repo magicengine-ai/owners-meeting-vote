@@ -1,0 +1,80 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 顶部问候 -->
+  <view class="card mb-20">
+    <view wx:if="{{userInfo}}" class="text-center">
+      <text class="text-primary">欢迎，{{userInfo.nickName}}</text>
+    </view>
+    <view wx:else class="text-center">
+      <text class="text-gray">请先登录</text>
+      <button class="btn-primary mt-20" bindtap="goToAuth">立即登录</button>
+    </view>
+  </view>
+
+  <!-- 公告栏 -->
+  <view class="card mb-20">
+    <view class="card-header">
+      <text class="card-title">📢 小区公告</text>
+      <text class="card-more" bindtap="goToNoticeList">查看全部 ></text>
+    </view>
+    <view class="notice-list">
+      <view 
+        wx:for="{{notices}}" 
+        wx:key="id" 
+        class="notice-item"
+        bindtap="goToNoticeDetail"
+        data-id="{{item.id}}"
+      >
+        <text class="notice-title">{{item.title}}</text>
+        <text class="notice-date">{{item.date}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 进行中的投票 -->
+  <view class="card mb-20">
+    <view class="card-header">
+      <text class="card-title">🗳️ 进行中的投票</text>
+      <text class="card-more" bindtap="goToVoteList">查看全部 ></text>
+    </view>
+    <view class="vote-list">
+      <view 
+        wx:for="{{activeVotes}}" 
+        wx:key="id" 
+        class="vote-item"
+        bindtap="goToVoteDetail"
+        data-id="{{item.id}}"
+      >
+        <text class="vote-title">{{item.title}}</text>
+        <view class="vote-progress">
+          <view class="progress-bar">
+            <view class="progress-fill" style="width: {{item.progress}}%"></view>
+          </view>
+          <text class="progress-text">{{item.totalVotes}}/{{item.totalHouseholds}} ({{item.progress}}%)</text>
+        </view>
+        <text class="vote-time">截止：{{item.endTime}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 即将召开的会议 -->
+  <view class="card mb-20">
+    <view class="card-header">
+      <text class="card-title">📅 即将召开的会议</text>
+      <text class="card-more" bindtap="goToMeetingList">查看全部 ></text>
+    </view>
+    <view class="meeting-list">
+      <view 
+        wx:for="{{upcomingMeetings}}" 
+        wx:key="id" 
+        class="meeting-item"
+        bindtap="goToMeetingDetail"
+        data-id="{{item.id}}"
+      >
+        <text class="meeting-title">{{item.title}}</text>
+        <text class="meeting-info">📍 {{item.location}}</text>
+        <text class="meeting-info">⏰ {{item.time}}</text>
+      </view>
+    </view>
+  </view>
+</view>
