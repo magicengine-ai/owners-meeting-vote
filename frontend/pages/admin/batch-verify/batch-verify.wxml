@@ -1,0 +1,82 @@
+<!--pages/admin/batch-verify/batch-verify.wxml-->
+<view class="container">
+  <!-- 头部操作栏 -->
+  <view class="header">
+    <view class="selected-info">
+      <text class="selected-count">{{selectedIds.length}}</text>
+      <text class="selected-text">项已选择</text>
+    </view>
+    <view class="action-buttons">
+      <button 
+        class="action-btn approve-all" 
+        bindtap="batchApprove"
+        disabled="{{selectedIds.length === 0}}"
+      >
+        批量通过
+      </button>
+      <button 
+        class="action-btn reject-all" 
+        bindtap="batchReject"
+        disabled="{{selectedIds.length === 0}}"
+      >
+        批量拒绝
+      </button>
+    </view>
+  </view>
+
+  <!-- 审核列表 -->
+  <view class="verify-list">
+    <view 
+      class="verify-item {{selectedIds.includes(item.user_id) ? 'selected' : ''}}" 
+      wx:for="{{verifyList}}" 
+      wx:key="user_id"
+      bindtap="toggleSelect"
+      data-user-id="{{item.user_id}}"
+    >
+      <view class="item-select">
+        <view class="checkbox {{selectedIds.includes(item.user_id) ? 'checked' : ''}}">
+          <text wx:if="{{selectedIds.includes(item.user_id)}}">✓</text>
+        </view>
+      </view>
+
+      <view class="item-content">
+        <view class="item-header">
+          <text class="item-nickname">{{item.nickname || '微信用户'}}</text>
+          <text class="item-time">{{item.created_at | formatTime}}</text>
+        </view>
+
+        <view class="info-row">
+          <text class="info-label">产权人：</text>
+          <text class="info-value">{{item.property_owner}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">地址：</text>
+          <text class="info-value">{{item.property_address}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{verifyList.length === 0 && !loading}}">
+      <text class="empty-icon">✅</text>
+      <text class="empty-text">没有待审核的申请</text>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <text class="loading-icon">🔄</text>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <!-- 全选按钮 -->
+  <view class="select-all-bar">
+    <view class="checkbox-all" bindtap="toggleSelectAll">
+      <view class="checkbox {{selectAll ? 'checked' : ''}}">
+        <text wx:if="{{selectAll}}">✓</text>
+      </view>
+      <text class="select-all-text">全选</text>
+    </view>
+    <text class="total-count">共 {{pendingCount}} 项</text>
+  </view>
+</view>
