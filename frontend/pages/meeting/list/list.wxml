@@ -1,0 +1,99 @@
+<!--pages/meeting/list/list.wxml-->
+<view class="container">
+  <!-- 头部统计 -->
+  <view class="header">
+    <view class="stat-card">
+      <text class="stat-num">{{totalCount}}</text>
+      <text class="stat-text">个会议</text>
+    </view>
+  </view>
+
+  <!-- 状态筛选 -->
+  <view class="filter-bar">
+    <text 
+      class="filter-item {{currentStatus === '' ? 'active' : ''}}" 
+      bindtap="changeStatus" 
+      data-status=""
+    >
+      全部
+    </text>
+    <text 
+      class="filter-item {{currentStatus === 'upcoming' ? 'active' : ''}}" 
+      bindtap="changeStatus" 
+      data-status="upcoming"
+    >
+      待开始
+    </text>
+    <text 
+      class="filter-item {{currentStatus === 'ongoing' ? 'active' : ''}}" 
+      bindtap="changeStatus" 
+      data-status="ongoing"
+    >
+      进行中
+    </text>
+    <text 
+      class="filter-item {{currentStatus === 'completed' ? 'active' : ''}}" 
+      bindtap="changeStatus" 
+      data-status="completed"
+    >
+      已结束
+    </text>
+  </view>
+
+  <!-- 会议列表 -->
+  <view class="meeting-list">
+    <view 
+      class="meeting-item" 
+      wx:for="{{meetingList}}" 
+      wx:key="meeting_id"
+      bindtap="goToDetail"
+      data-meeting-id="{{item.meeting_id}}"
+    >
+      <view class="item-header">
+        <text class="item-title">{{item.title}}</text>
+        <text class="item-status {{item.status}}">
+          {{item.status === 'upcoming' ? '待开始' : item.status === 'ongoing' ? '进行中' : item.status === 'completed' ? '已结束' : '已取消'}}
+        </text>
+      </view>
+
+      <view class="item-desc">{{item.description}}</view>
+
+      <view class="item-info">
+        <view class="info-row">
+          <text class="info-icon">📅</text>
+          <text class="info-text">{{item.start_time | formatDate}}</text>
+        </view>
+        <view class="info-row" wx:if="{{item.location}}">
+          <text class="info-icon">📍</text>
+          <text class="info-text">{{item.location}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-icon">👥</text>
+          <text class="info-text">{{item.total_attendees}}人报名</text>
+        </view>
+      </view>
+
+      <view class="item-action" wx:if="{{item.status === 'upcoming' || item.status === 'ongoing'}}">
+        <text class="action-text">点击查看详情</text>
+        <text class="action-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{meetingList.length === 0 && !loading}}">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无会议</text>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <text class="loading-icon">🔄</text>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{hasMore}}">
+    <text class="load-text">加载更多...</text>
+  </view>
+</view>
