@@ -90,13 +90,16 @@ async def root():
 # 导入路由
 from src.auth.auth import router as auth_router
 from src.vote.vote import router as vote_router
+from src.admin.verify import router as admin_verify_router
+from src.push.notice import router as notice_router
 
 # 注册路由
 app.include_router(auth_router, prefix="/api/auth", tags=["认证"])
 app.include_router(vote_router, prefix="/api/vote", tags=["投票"])
+app.include_router(admin_verify_router, prefix="/api/admin", tags=["管理后台"])
+app.include_router(notice_router, prefix="/api", tags=["消息通知"])
 # app.include_router(meeting.router, prefix="/api/meeting", tags=["会议"])
 # app.include_router(chain.router, prefix="/api/chain", tags=["区块链"])
-# app.include_router(push.router, prefix="/api/push", tags=["消息推送"])
 
 @app.on_event("startup")
 async def startup_event():

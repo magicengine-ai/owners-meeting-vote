@@ -1,0 +1,76 @@
+<!--pages/admin/verify-list/verify-list.wxml-->
+<view class="container">
+  <!-- 头部统计 -->
+  <view class="header">
+    <view class="stat-card">
+      <text class="stat-num">{{pendingCount}}</text>
+      <text class="stat-text">待审核</text>
+    </view>
+  </view>
+
+  <!-- 审核列表 -->
+  <view class="verify-list">
+    <view 
+      class="verify-item" 
+      wx:for="{{verifyList}}" 
+      wx:key="user_id"
+      bindtap="goToDetail"
+      data-user="{{item}}"
+    >
+      <view class="item-header">
+        <text class="item-nickname">{{item.nickname || '微信用户'}}</text>
+        <text class="item-time">{{item.created_at | formatTime}}</text>
+      </view>
+
+      <view class="item-content">
+        <view class="info-row">
+          <text class="info-label">产权人：</text>
+          <text class="info-value">{{item.property_owner}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">房产证号：</text>
+          <text class="info-value">{{item.property_cert_number}}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">房屋地址：</text>
+          <text class="info-value">{{item.property_address}}</text>
+        </view>
+        <view class="info-row" wx:if="{{item.property_area}}">
+          <text class="info-label">建筑面积：</text>
+          <text class="info-value">{{item.property_area}}㎡</text>
+        </view>
+      </view>
+
+      <view class="item-actions">
+        <button 
+          class="action-btn reject" 
+          bindtap="rejectVerify" 
+          data-user="{{item}}"
+          catchtap
+        >
+          拒绝
+        </button>
+        <button 
+          class="action-btn approve" 
+          bindtap="approveVerify" 
+          data-user="{{item}}"
+          catchtap
+        >
+          通过
+        </button>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{verifyList.length === 0 && !loading}}">
+      <text class="empty-icon">✅</text>
+      <text class="empty-text">没有待审核的申请</text>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <text class="loading-icon">🔄</text>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,163 @@
+/* pages/admin/verify-list/verify-list.wxss */
+
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 40rpx;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40rpx;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20rpx;
+  padding: 30rpx;
+  text-align: center;
+}
+
+.stat-num {
+  display: block;
+  font-size: 80rpx;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 10rpx;
+}
+
+.stat-text {
+  display: block;
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Verify List */
+.verify-list {
+  padding: 30rpx;
+}
+
+.verify-item {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25rpx;
+  padding-bottom: 25rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.item-nickname {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.item-time {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.item-content {
+  margin-bottom: 25rpx;
+}
+
+.info-row {
+  margin-bottom: 15rpx;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  display: inline-block;
+  font-size: 26rpx;
+  color: #999999;
+  width: 140rpx;
+}
+
+.info-value {
+  display: inline-block;
+  font-size: 28rpx;
+  color: #333333;
+  max-width: 500rpx;
+  word-break: break-all;
+}
+
+.item-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.action-btn.reject {
+  background: #fff0f0;
+  color: #ff4444;
+  border: 2rpx solid #ff4444;
+}
+
+.action-btn.approve {
+  background: linear-gradient(135deg, #07c160 0%, #00b578 100%);
+  color: #ffffff;
+  border: none;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: #999999;
+}
+
+/* Loading State */
+.loading-state {
+  text-align: center;
+  padding: 60rpx 0;
+}
+
+.loading-icon {
+  font-size: 60rpx;
+  display: block;
+  margin-bottom: 20rpx;
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999999;
+}
