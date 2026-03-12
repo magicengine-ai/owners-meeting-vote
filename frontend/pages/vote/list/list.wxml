@@ -1,0 +1,84 @@
+<!--pages/vote/list/list.wxml-->
+<view class="container">
+  <!-- 头部统计 -->
+  <view class="header">
+    <view class="stat-card">
+      <text class="stat-num">{{totalCount}}</text>
+      <text class="stat-text">个投票</text>
+    </view>
+  </view>
+
+  <!-- 状态筛选 -->
+  <view class="filter-bar">
+    <text 
+      class="filter-item {{currentStatus === '' ? 'active' : ''}}" 
+      bindtap="changeStatus" 
+      data-status=""
+    >
+      全部
+    </text>
+    <text 
+      class="filter-item {{currentStatus === 'active' ? 'active' : ''}}" 
+      bindtap="changeStatus" 
+      data-status="active"
+    >
+      进行中
+    </text>
+    <text 
+      class="filter-item {{currentStatus === 'completed' ? 'active' : ''}}" 
+      bindtap="changeStatus" 
+      data-status="completed"
+    >
+      已结束
+    </text>
+  </view>
+
+  <!-- 投票列表 -->
+  <view class="vote-list">
+    <view 
+      class="vote-item" 
+      wx:for="{{voteList}}" 
+      wx:key="vote_id"
+      bindtap="goToDetail"
+      data-vote-id="{{item.vote_id}}"
+    >
+      <view class="item-header">
+        <text class="item-title">{{item.title}}</text>
+        <text class="item-status {{item.status}}">{{item.status === 'active' ? '进行中' : '已结束'}}</text>
+      </view>
+
+      <view class="item-desc">{{item.description}}</view>
+
+      <view class="item-footer">
+        <view class="vote-info">
+          <text class="info-label">📊 已投票：</text>
+          <text class="info-value">{{item.total_votes}}票</text>
+        </view>
+        <view class="vote-time">
+          <text class="time-text">{{item.end_time | formatDate}}</text>
+        </view>
+      </view>
+
+      <view class="item-tag {{item.vote_type}}">
+        {{item.vote_type === 'single' ? '单选' : '多选'}}
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{voteList.length === 0 && !loading}}">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无投票</text>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <text class="loading-icon">🔄</text>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{hasMore}}">
+    <text class="load-text">加载更多...</text>
+  </view>
+</view>
