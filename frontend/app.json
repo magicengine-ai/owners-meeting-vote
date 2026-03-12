@@ -8,7 +8,8 @@
     "pages/vote/result",
     "pages/meeting/list",
     "pages/meeting/detail",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/profile/property/property"
   ],
   "window": {
     "backgroundTextStyle": "light",
