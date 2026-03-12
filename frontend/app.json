@@ -3,13 +3,15 @@
     "pages/index/index",
     "pages/auth/login/login",
     "pages/auth/verify/verify",
-    "pages/vote/list",
-    "pages/vote/detail",
+    "pages/vote/list/list",
+    "pages/vote/detail/detail",
     "pages/vote/result",
     "pages/meeting/list",
     "pages/meeting/detail",
     "pages/profile/profile",
-    "pages/profile/property/property"
+    "pages/profile/property/property",
+    "pages/admin/verify-list/verify-list",
+    "pages/admin/batch-verify/batch-verify"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -100,7 +100,7 @@ app.include_router(verify_router, prefix="/api/admin", tags=["管理后台"])
 app.include_router(history_router, prefix="/api/admin", tags=["管理后台"])
 app.include_router(notice_router, prefix="/api", tags=["消息通知"])
 # app.include_router(meeting.router, prefix="/api/meeting", tags=["会议"])
-# app.include_router(chain.router, prefix="/api/chain", tags=["区块链"])
+# app.include_router(chain.router, prefix="/api/chain", tags=["区块链存证"])
 
 @app.on_event("startup")
 async def startup_event():

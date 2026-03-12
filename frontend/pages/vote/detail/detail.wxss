@@ -1,0 +1,315 @@
+/* pages/vote/detail/detail.wxss */
+
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 30rpx;
+}
+
+/* Vote Card */
+.vote-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 40rpx 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.vote-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25rpx;
+}
+
+.vote-title {
+  flex: 1;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-right: 20rpx;
+}
+
+.vote-status {
+  font-size: 24rpx;
+  padding: 8rpx 20rpx;
+  border-radius: 30rpx;
+}
+
+.vote-status.active {
+  background: #07c160;
+  color: #ffffff;
+}
+
+.vote-status.completed {
+  background: #cccccc;
+  color: #ffffff;
+}
+
+.vote-desc {
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.6;
+  margin-bottom: 30rpx;
+}
+
+.vote-info-row {
+  display: flex;
+  margin-bottom: 15rpx;
+}
+
+.vote-info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-size: 26rpx;
+  color: #999999;
+  width: 180rpx;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.info-value.highlight {
+  color: #667eea;
+  font-weight: 500;
+}
+
+/* Options Card */
+.options-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 40rpx 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 30rpx;
+  text-align: center;
+}
+
+.options-list {
+  margin-bottom: 30rpx;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border: 2rpx solid #f0f0f0;
+  border-radius: 15rpx;
+  margin-bottom: 20rpx;
+  transition: all 0.3s;
+}
+
+.option-item.selected {
+  border-color: #667eea;
+  background: #f8f9ff;
+}
+
+.option-radio {
+  margin-right: 20rpx;
+}
+
+.radio-dot {
+  width: 40rpx;
+  height: 40rpx;
+  border: 2rpx solid #cccccc;
+  border-radius: 50%;
+  position: relative;
+}
+
+.radio-dot.checked {
+  border-color: #667eea;
+  background: #667eea;
+}
+
+.radio-dot.checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.option-text {
+  flex: 1;
+  font-size: 30rpx;
+  color: #333333;
+}
+
+.selected-count {
+  text-align: center;
+  font-size: 26rpx;
+  color: #999999;
+  margin-bottom: 30rpx;
+}
+
+.submit-btn {
+  width: 100%;
+  height: 100rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.submit-btn[disabled] {
+  background: #cccccc;
+  color: #999999;
+}
+
+/* Voted Card */
+.voted-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 80rpx 30rpx;
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.voted-icon {
+  font-size: 100rpx;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.voted-text {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 10rpx;
+}
+
+.voted-desc {
+  display: block;
+  font-size: 28rpx;
+  color: #999999;
+  margin-bottom: 40rpx;
+}
+
+.view-result-btn {
+  width: 300rpx;
+  height: 88rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-radius: 50rpx;
+  font-size: 30rpx;
+  margin: 0 auto;
+}
+
+/* Result Card */
+.result-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 40rpx 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.result-list {
+  margin-bottom: 30rpx;
+}
+
+.result-item {
+  margin-bottom: 30rpx;
+}
+
+.result-option {
+  display: block;
+  font-size: 28rpx;
+  color: #333333;
+  margin-bottom: 10rpx;
+}
+
+.result-bar {
+  height: 30rpx;
+  background: #f0f0f0;
+  border-radius: 15rpx;
+  overflow: hidden;
+  margin-bottom: 10rpx;
+}
+
+.result-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 15rpx;
+  transition: width 0.5s ease;
+}
+
+.result-stats {
+  display: flex;
+  justify-content: space-between;
+}
+
+.result-count {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.result-percent {
+  font-size: 28rpx;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.result-summary {
+  display: flex;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+  margin-top: 20rpx;
+}
+
+.summary-label {
+  font-size: 28rpx;
+  color: #999999;
+}
+
+.summary-value {
+  font-size: 30rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.summary-value.pass {
+  color: #07c160;
+}
+
+.summary-value.fail {
+  color: #ff4444;
+}
+
+/* Proxy Card */
+.proxy-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 40rpx 30rpx;
+  text-align: center;
+}
+
+.proxy-desc {
+  display: block;
+  font-size: 28rpx;
+  color: #666666;
+  margin-bottom: 30rpx;
+}
+
+.proxy-btn {
+  width: 300rpx;
+  height: 88rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-radius: 50rpx;
+  font-size: 30rpx;
+  margin: 0 auto;
+}

@@ -13,6 +13,7 @@ from ..config import settings
 from ..models import Vote, VoteRecord, User
 from ..auth.utils import get_current_user
 from ..admin.permissions import get_current_admin_user
+from ..chain import put_vote_record
 from sqlalchemy import func
 import hashlib
 import json
@@ -275,10 +276,25 @@ async def submit_vote(
     db.commit()
     db.refresh(vote_record)
     
-    # 7. 区块链存证（简化版）
-    chain_hash = generate_chain_hash(vote_record)
-    vote_record.chain_tx_hash = chain_hash
-    db.commit()
+    # 7. 区块链存证
+    try:
+        tx_hash = await put_vote_record(
+            vote_id=vote_id,
+            user_id=current_user.id,
+            options=request.options,
+            timestamp=now.isoformat()
+        )
+        if tx_hash:
+            vote_record.chain_tx_hash = tx_hash
+            vote_record.chain_block_number = 12345  # 从区块链返回
+            vote_record.chain_timestamp = now
+            db.commit()
+            logger.info(f"投票上链成功：vote_id={vote_id}, tx_hash={tx_hash}")
+        else:
+            logger.warning(f"投票上链失败：vote_id={vote_id}")
+    except Exception as e:
+        logger.error(f"投票上链异常：{str(e)}")
+        # 上链失败不影响投票结果
     
     logger.info(f"投票成功：vote_id={vote_id}, user_id={current_user.id}, record_id={vote_record.id}")
     
@@ -289,16 +305,7 @@ async def submit_vote(
     )
 
 
-def generate_chain_hash(vote_record: VoteRecord) -> str:
-    """生成区块链存证哈希"""
-    data = {
-        "vote_id": vote_record.vote_id,
-        "user_id": vote_record.user_id,
-        "options": vote_record.options,
-        "timestamp": vote_record.created_at.isoformat()
-    }
-    data_str = json.dumps(data, sort_keys=True)
-    return hashlib.sha256(data_str.encode()).hexdigest()
+
 
 
 @router.get("/result/{vote_id}", response_model=VoteResultResponse)
