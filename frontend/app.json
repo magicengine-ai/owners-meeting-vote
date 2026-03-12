@@ -1,7 +1,8 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/auth/auth",
+    "pages/auth/login/login",
+    "pages/auth/verify/verify",
     "pages/vote/list",
     "pages/vote/detail",
     "pages/vote/result",
