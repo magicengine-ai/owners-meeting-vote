@@ -65,9 +65,13 @@ class WechatLoginResponse(BaseModel):
 
 
 class PropertyCertRequest(BaseModel):
-    """房产证上传请求"""
-    image_base64: str = Field(..., description="房产证图片 Base64")
+    """房产证上传/验证请求"""
+    image_base64: Optional[str] = Field(None, description="房产证图片 Base64（OCR 识别时需要）")
     cert_type: str = Field(default="property", description="证件类型：property/fangben")
+    owner_name: Optional[str] = Field(None, description="产权人姓名（提交认证时需要）")
+    cert_number: Optional[str] = Field(None, description="房产证号（提交认证时需要）")
+    address: Optional[str] = Field(None, description="房屋地址（提交认证时需要）")
+    area: Optional[float] = Field(None, description="建筑面积（提交认证时需要）")
 
 
 class PropertyCertResponse(BaseModel):
@@ -319,45 +323,182 @@ async def property_ocr(request: PropertyCertRequest, db: Session = Depends(get_d
     2. 提取关键信息（产权人、地址、面积等）
     3. 返回识别结果
     """
-    # TODO: 实现 OCR 识别逻辑
-    # 1. 调用百度 AI OCR API
-    # 2. 解析返回结果
-    # 3. 返回结构化数据
-    
     logger.info(f"房产证 OCR 请求：cert_type={request.cert_type}")
     
-    # 模拟响应
-    return PropertyCertResponse(
-        owner_name="张三",
-        cert_number="京 (2024) 朝阳区不动产权第 1234567 号",
-        address="北京市朝阳区 XX 路 XX 号院 X 号楼 X 单元 XXX 室",
-        area=89.5,
-        confidence=0.95
-    )
+    try:
+        # 1. 调用百度 AI OCR API
+        from aip import AipOcr
+        
+        # 初始化客户端
+        client = AipOcr(
+            settings.OCR_APP_ID,
+            settings.OCR_API_KEY,
+            settings.OCR_SECRET_KEY
+        )
+        
+        # 2. 调用房产证识别接口
+        image_data = request.image_base64
+        result = client.accurateBasic(image_data)
+        
+        # 3. 解析 OCR 结果
+        if 'words_result' not in result:
+            logger.error(f"OCR 识别失败：{result}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="OCR 识别失败，请重试"
+            )
+        
+        # 4. 提取关键信息（简化版，实际需要根据房产证格式优化）
+        words_list = [item['words'] for item in result['words_result']]
+        words_text = '\n'.join(words_list)
+        
+        # 提取产权人、地址、面积等信息
+        owner_name = extract_owner_name(words_text)
+        cert_number = extract_cert_number(words_text)
+        address = extract_address(words_text)
+        area = extract_area(words_text)
+        
+        logger.info(f"OCR 识别成功：owner={owner_name}, address={address}")
+        
+        return PropertyCertResponse(
+            owner_name=owner_name or "未识别到产权人",
+            cert_number=cert_number or "未识别到证号",
+            address=address or "未识别到地址",
+            area=area,
+            confidence=result.get('words_result_confidence', 0.9)
+        )
+        
+    except ImportError:
+        # 开发环境：如果没有安装百度 AI SDK，返回模拟数据
+        if settings.DEBUG:
+            logger.warning("百度 AI SDK 未安装，使用模拟数据")
+            return PropertyCertResponse(
+                owner_name="张三",
+                cert_number="京 (2024) 朝阳区不动产权第 1234567 号",
+                address="北京市朝阳区 XX 路 XX 号院 X 号楼 X 单元 XXX 室",
+                area=89.5,
+                confidence=0.95
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="OCR 服务暂时不可用"
+            )
+    except Exception as e:
+        logger.error(f"OCR 识别异常：{str(e)}", exc_info=True)
+        if settings.DEBUG:
+            # 开发环境返回模拟数据
+            return PropertyCertResponse(
+                owner_name="张三",
+                cert_number="京 (2024) 朝阳区不动产权第 1234567 号",
+                address="北京市朝阳区 XX 路 XX 号院 X 号楼 X 单元 XXX 室",
+                area=89.5,
+                confidence=0.95
+            )
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="OCR 识别失败，请重试"
+            )
+
+
+# ==================== OCR 信息提取辅助函数 ====================
+
+def extract_owner_name(text: str) -> str:
+    """提取产权人姓名"""
+    import re
+    # 匹配"产权人"、"权利人"等关键词后的姓名
+    patterns = [
+        r'产权 [人主][:：]\s*([^\s\n]+)',
+        r'权利 [人主][:：]\s*([^\s\n]+)',
+        r'共有人 [:：]\s*([^\s\n]+)',
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            return match.group(1).strip()
+    return ""
+
+
+def extract_cert_number(text: str) -> str:
+    """提取房产证号"""
+    import re
+    patterns = [
+        r'(京 [沪津渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼][A-Z]?[\(（]?\d{4}[\)）]?[A-Z]?不动产权第\s*\d+\s*号)',
+        r'(京 [沪津渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼][A-Z]?[\(（]?\d{4}[\)）]?[A-Z]?房地产权证第\s*\d+\s*号)',
+        r'权证编号 [:：]\s*([^\s\n]+)',
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            return match.group(1).strip()
+    return ""
+
+
+def extract_address(text: str) -> str:
+    """提取房屋地址"""
+    import re
+    patterns = [
+        r'坐落 [:：]\s*([^\n]+)',
+        r'地址 [:：]\s*([^\n]+)',
+        r'位置 [:：]\s*([^\n]+)',
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            return match.group(1).strip()
+    return ""
+
+
+def extract_area(text: str) -> Optional[float]:
+    """提取建筑面积"""
+    import re
+    patterns = [
+        r'建筑面积 [:：]?\s*([\d.]+)\s*[㎡平方米]',
+        r'面积 [:：]?\s*([\d.]+)\s*[㎡平方米]',
+        r'([\d.]+)\s*[㎡平方米]',
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            try:
+                return float(match.group(1))
+            except:
+                pass
+    return None
 
 
 @router.post("/property/verify")
 async def verify_property(
-    owner_name: str,
-    cert_number: str,
-    address: str,
+    request: PropertyCertRequest,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
-    房产证验证
+    提交房产证认证
     
-    1. 对接政府系统验证房产证真伪
-    2. 验证产权人信息
-    3. 验证房屋地址
+    1. 保存用户房产信息
+    2. 设置认证状态为待审核
+    3. 返回审核状态
     """
-    # TODO: 实现政府系统对接
-    # 1. 调用住建委/房管局 API
-    # 2. 验证房产证信息
-    # 3. 返回验证结果
+    logger.info(f"提交房产证认证：user_id={current_user.id}")
     
-    logger.info(f"房产证验证：name={owner_name}, cert={cert_number}")
+    # 1. 更新用户房产信息
+    current_user.property_cert_number = request.cert_number
+    current_user.property_owner = request.owner_name
+    current_user.property_address = request.address
+    current_user.property_area = request.area
+    current_user.is_verified = False  # 待审核状态
+    current_user.updated_at = datetime.now()
     
-    return {"status": "approved", "message": "验证通过"}
+    db.commit()
+    
+    logger.info(f"房产证认证已提交：user_id={current_user.id}, status=pending")
+    
+    return {
+        "status": "pending",
+        "message": "认证已提交，等待审核"
+    }
 
 
 @router.post("/face/recognize")

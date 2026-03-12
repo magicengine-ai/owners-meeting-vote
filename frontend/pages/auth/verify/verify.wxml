@@ -1,0 +1,125 @@
+<!--pages/auth/verify/verify.wxml-->
+<view class="verify-container">
+  <!-- 头部说明 -->
+  <view class="header">
+    <view class="icon">📋</view>
+    <text class="title">身份认证</text>
+    <text class="subtitle">上传房产证完成业主身份验证</text>
+  </view>
+
+  <!-- 认证状态提示 -->
+  <view class="status-card" wx:if="{{verifyStatus === 'approved'}}">
+    <view class="status-icon">✅</view>
+    <text class="status-text">已认证</text>
+    <text class="status-desc">您已完成身份认证，可以参与投票</text>
+  </view>
+
+  <view class="status-card pending" wx:if="{{verifyStatus === 'pending'}}">
+    <view class="status-icon">⏳</view>
+    <text class="status-text">审核中</text>
+    <text class="status-desc">工作人员正在审核您的认证信息</text>
+  </view>
+
+  <view class="status-card rejected" wx:if="{{verifyStatus === 'rejected'}}">
+    <view class="status-icon">❌</view>
+    <text class="status-text">认证失败</text>
+    <text class="status-desc">{{rejectReason || '请重新上传房产证'}}</text>
+    <button class="retry-btn" bindtap="resetVerify">重新认证</button>
+  </view>
+
+  <!-- 认证表单 -->
+  <view class="verify-form" wx:if="{{verifyStatus === 'none' || verifyStatus === 'rejected'}}">
+    <!-- 步骤指示 -->
+    <view class="steps">
+      <view class="step {{currentStep >= 1 ? 'active' : ''}}">
+        <view class="step-num">1</view>
+        <text class="step-text">上传房产证</text>
+      </view>
+      <view class="step-line {{currentStep >= 2 ? 'active' : ''}}"></view>
+      <view class="step {{currentStep >= 2 ? 'active' : ''}}">
+        <view class="step-num">2</view>
+        <text class="step-text">OCR 识别</text>
+      </view>
+      <view class="step-line {{currentStep >= 3 ? 'active' : ''}}"></view>
+      <view class="step {{currentStep >= 3 ? 'active' : ''}}">
+        <view class="step-num">3</view>
+        <text class="step-text">确认提交</text>
+      </view>
+    </view>
+
+    <!-- 步骤 1：上传房产证 -->
+    <view class="step-content" wx:if="{{currentStep === 1}}">
+      <view class="upload-section">
+        <view class="upload-tips">
+          <text class="tips-title">📸 上传房产证照片</text>
+          <text class="tips-desc">请拍摄或上传清晰的房产证照片</text>
+          <text class="tips-require">要求：完整、清晰、无反光</text>
+        </view>
+
+        <view class="upload-area" bindtap="chooseImage">
+          <image wx:if="{{imagePath}}" class="preview-image" src="{{imagePath}}" mode="aspectFit"></image>
+          <view wx:else class="upload-placeholder">
+            <text class="upload-icon">📷</text>
+            <text class="upload-text">点击上传</text>
+          </view>
+        </view>
+
+        <button 
+          class="next-btn" 
+          bindtap="nextStep" 
+          disabled="{{!imagePath}}"
+        >
+          下一步：OCR 识别
+        </button>
+      </view>
+    </view>
+
+    <!-- 步骤 2：OCR 识别 -->
+    <view class="step-content" wx:if="{{currentStep === 2}}">
+      <view class="ocr-section">
+        <view class="ocr-loading" wx:if="{{ocrLoading}}">
+          <text class="loading-icon">🔄</text>
+          <text class="loading-text">正在识别中...</text>
+        </view>
+
+        <view class="ocr-result" wx:if="{{!ocrLoading && ocrData}}">
+          <view class="result-title">✅ 识别成功</view>
+          
+          <view class="info-card">
+            <view class="info-item">
+              <text class="info-label">产权人</text>
+              <text class="info-value">{{ocrData.owner_name}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">房产证号</text>
+              <text class="info-value">{{ocrData.cert_number}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">房屋地址</text>
+              <text class="info-value">{{ocrData.address}}</text>
+            </view>
+            <view class="info-item" wx:if="{{ocrData.area}}">
+              <text class="info-label">建筑面积</text>
+              <text class="info-value">{{ocrData.area}}㎡</text>
+            </view>
+          </view>
+
+          <view class="confirm-tips">
+            <text>请确认以上信息无误后提交</text>
+          </view>
+
+          <view class="btn-group">
+            <button class="back-btn" bindtap="prevStep">重新上传</button>
+            <button class="next-btn" bindtap="submitVerify">确认提交</button>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部说明 -->
+  <view class="footer">
+    <text class="footer-text">🔒 信息仅用于业主身份验证</text>
+    <text class="footer-text">我们将严格保护您的隐私</text>
+  </view>
+</view>
