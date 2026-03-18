@@ -8,6 +8,7 @@ import logging
 
 from ..db import get_db
 from ..models import User
+from ..auth.utils import get_current_user
 
 logger = logging.getLogger(__name__)
 
