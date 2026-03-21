@@ -1,13 +1,11 @@
-{
+﻿{
   "pages": [
     "pages/index/index",
     "pages/auth/login/login",
     "pages/auth/verify/verify",
     "pages/vote/list/list",
     "pages/vote/detail/detail",
-    "pages/vote/result",
-    "pages/meeting/list",
-    "pages/meeting/detail",
+    "pages/meeting/list/list",
     "pages/profile/profile",
     "pages/profile/property/property",
     "pages/admin/verify-list/verify-list",
@@ -31,13 +29,13 @@
         "selectedIconPath": "images/home-active.png"
       },
       {
-        "pagePath": "pages/vote/list",
+        "pagePath": "pages/vote/list/list",
         "text": "投票",
         "iconPath": "images/vote.png",
         "selectedIconPath": "images/vote-active.png"
       },
       {
-        "pagePath": "pages/meeting/list",
+        "pagePath": "pages/meeting/list/list",
         "text": "会议",
         "iconPath": "images/meeting.png",
         "selectedIconPath": "images/meeting-active.png"
