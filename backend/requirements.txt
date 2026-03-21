@@ -7,7 +7,9 @@ python-multipart==0.0.6
 
 # 数据库
 sqlalchemy==2.0.25
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.9          # PostgreSQL（本地开发）
+pymysql==1.1.0                    # MySQL（云托管）
+cryptography==42.0.0              # MySQL 加密连接支持
 alembic==1.13.1
 
 # 缓存

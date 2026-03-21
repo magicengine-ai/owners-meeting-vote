@@ -1,0 +1,72 @@
+{
+  "version": "2.0",
+  "envId": "{{envId}}",
+  "metadata": {
+    "name": "业主大会投票小程序",
+    "description": "基于微信云托管的业主大会投票系统"
+  },
+  "cloudBaseConfig": {
+    "timeout": 30,
+    "environment": "production"
+  },
+  "services": [
+    {
+      "name": "vote-api",
+      "type": "cloudrun",
+      "region": "ap-guangzhou",
+      "runtime": "CustomImage",
+      "config": {
+        "cpu": 1,
+        "memory": 2048,
+        "minNum": 0,
+        "maxNum": 10,
+        "timeout": 30,
+        "envParams": {
+          "APP_VERSION": "1.0.0",
+          "DEBUG": "false",
+          "DB_HOST": "{{TENCENTCLOUD_MYSQL_HOST}}",
+          "DB_PORT": "{{TENCENTCLOUD_MYSQL_PORT}}",
+          "DB_NAME": "{{TENCENTCLOUD_MYSQL_DATABASE}}",
+          "DB_USER": "{{TENCENTCLOUD_MYSQL_USERNAME}}",
+          "DB_PASSWORD": "{{TENCENTCLOUD_MYSQL_PASSWORD}}",
+          "REDIS_HOST": "{{TENCENTCLOUD_REDIS_HOST}}",
+          "REDIS_PORT": "{{TENCENTCLOUD_REDIS_PORT}}",
+          "REDIS_PASSWORD": "{{TENCENTCLOUD_REDIS_PASSWORD}}",
+          "JWT_SECRET_KEY": "{{CLOUD_JWT_SECRET}}",
+          "WECHAT_APP_ID": "{{CLOUD_WECHAT_APPID}}",
+          "WECHAT_APP_SECRET": "{{CLOUD_WECHAT_SECRET}}"
+        },
+        "dockerfilePath": "./cloud-deploy/Dockerfile.cloud",
+        "buildDir": ".",
+        "contextDir": "."
+      },
+      "triggers": [
+        {
+          "type": "apigw",
+          "config": {
+            "path": "/api",
+            "methods": ["ANY"]
+          }
+        }
+      ]
+    }
+  ],
+  "framework": {
+    "name": "业主大会投票系统",
+    "plugins": {
+      "cloudRun": {
+        "use": "@cloudbase/framework-plugin-cloudrun",
+        "inputs": {
+          "services": [
+            {
+              "name": "vote-api",
+              "runtime": "CustomImage",
+              "buildDir": ".",
+              "dockerfilePath": "./cloud-deploy/Dockerfile.cloud"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
