@@ -16,17 +16,17 @@
       <view class="user-details">
         <text class="nickname">{{userInfo.nickname || '微信用户'}}</text>
         <text class="phone" wx:if="{{userInfo.phone}}">📱 {{userInfo.phone}}</text>
-        <text class="openid" wx:if="{{!userInfo.nickname && !userInfo.phone}}">ID: {{userInfo.openid | substring: 0:8}}...</text>
+        <text class="openid" wx:if="{{!userInfo.nickname && !userInfo.phone}}">ID: {{userInfo.openidSubstring}}...</text>
       </view>
     </view>
     
-    <!-- 认证状态 -->
+    <!-- 认证状�?-->
     <view class="verify-status" bindtap="goToVerify">
       <view class="status-badge {{verifyStatus}}">
-        <text class="badge-icon">{{verifyStatus === 'approved' ? '✅' : verifyStatus === 'pending' ? '⏳' : '⚠️'}}</text>
+        <text class="badge-icon">{{verifyStatus === 'approved' ? '�? : verifyStatus === 'pending' ? '�? : '⚠️'}}</text>
         <text class="badge-text">{{verifyText}}</text>
       </view>
-      <text class="arrow">›</text>
+      <text class="arrow">�?/text>
     </view>
   </view>
 
@@ -37,10 +37,10 @@
     <view class="menu-list">
       <!-- 我的投票 -->
       <view class="menu-item" bindtap="navigateTo" data-url="/pages/vote/list">
-        <view class="menu-icon">🗳️</view>
+        <view class="menu-icon">🗳�?/view>
         <text class="menu-text">我的投票</text>
         <text class="menu-badge" wx:if="{{voteCount > 0}}">{{voteCount}}</text>
-        <text class="arrow">›</text>
+        <text class="arrow">�?/text>
       </view>
 
       <!-- 我的会议 -->
@@ -48,7 +48,7 @@
         <view class="menu-icon">📋</view>
         <text class="menu-text">我的会议</text>
         <text class="menu-badge" wx:if="{{meetingCount > 0}}">{{meetingCount}}</text>
-        <text class="arrow">›</text>
+        <text class="arrow">�?/text>
       </view>
 
       <!-- 我的房产 -->
@@ -56,10 +56,10 @@
         <view class="menu-icon">🏠</view>
         <text class="menu-text">我的房产</text>
         <view class="menu-extra">
-          <text class="extra-text" wx:if="{{propertyInfo}}">{{propertyInfo.address | substring: 0:10}}...</text>
-          <text class="extra-text" wx:else>未认证</text>
+          <text class="extra-text" wx:if="{{propertyInfo}}">{{propertyInfo.addressSubstring}}...</text>
+          <text class="extra-text" wx:else>未认�?/text>
         </view>
-        <text class="arrow">›</text>
+        <text class="arrow">�?/text>
       </view>
 
       <!-- 消息通知 -->
@@ -67,7 +67,7 @@
         <view class="menu-icon">🔔</view>
         <text class="menu-text">消息通知</text>
         <text class="menu-badge" wx:if="{{noticeCount > 0}}">{{noticeCount}}</text>
-        <text class="arrow">›</text>
+        <text class="arrow">�?/text>
       </view>
     </view>
   </view>
@@ -81,21 +81,21 @@
       <view class="menu-item" bindtap="showAbout">
         <view class="menu-icon">ℹ️</view>
         <text class="menu-text">关于我们</text>
-        <text class="arrow">›</text>
+        <text class="arrow">�?/text>
       </view>
 
-      <!-- 帮助与反馈 -->
+      <!-- 帮助与反�?-->
       <view class="menu-item" bindtap="showFeedback">
-        <view class="menu-icon">❓</view>
-        <text class="menu-text">帮助与反馈</text>
-        <text class="arrow">›</text>
+        <view class="menu-icon">�?/view>
+        <text class="menu-text">帮助与反�?/text>
+        <text class="arrow">�?/text>
       </view>
     </view>
   </view>
 
-  <!-- 退出登录 -->
+  <!-- 退出登�?-->
   <view class="logout-section">
-    <button class="logout-btn" bindtap="logout">退出登录</button>
+    <button class="logout-btn" bindtap="logout">退出登�?/button>
   </view>
 
   <!-- 底部信息 -->
