@@ -4,7 +4,7 @@
   <view class="vote-card">
     <view class="vote-header">
       <text class="vote-title">{{voteDetail.title}}</text>
-      <text class="vote-status {{voteDetail.status}}">{{voteDetail.status === 'active' ? '进行中' : '已结束'}}</text>
+      <text class="vote-status {{voteDetail.status}}">{{voteDetail.status === 'active' ? '进行�? : '已结�?}}</text>
     </view>
 
     <view class="vote-desc">{{voteDetail.description}}</view>
@@ -15,18 +15,18 @@
     </view>
 
     <view class="vote-info-row">
-      <text class="info-label">📅 结束时间：</text>
+      <text class="info-label">📅 结束时间�?/text>
       <text class="info-value">{{voteDetail.end_time | formatDate}}</text>
     </view>
 
     <view class="vote-info-row">
       <text class="info-label">📊 已投票：</text>
-      <text class="info-value highlight">{{voteDetail.total_votes}}票</text>
+      <text class="info-value highlight">{{voteDetail.total_votes}}�?/text>
     </view>
 
     <view class="vote-info-row">
-      <text class="info-label">📝 投票类型：</text>
-      <text class="info-value">{{voteDetail.vote_type === 'single' ? '单选' : '多选'}}（{{voteDetail.min_votes}}-{{voteDetail.max_votes}}票）</text>
+      <text class="info-label">📝 投票类型�?/text>
+      <text class="info-value">{{voteDetail.vote_type === 'single' ? '单�? : '多�?}}（{{voteDetail.min_votes}}-{{voteDetail.max_votes}}票）</text>
     </view>
   </view>
 
@@ -49,7 +49,7 @@
       </view>
     </view>
 
-    <view class="selected-count">已选择 {{selectedOptions.length}} 项（{{voteDetail.min_votes}}-{{voteDetail.max_votes}}）</view>
+    <view class="selected-count">已选择 {{selectedOptions.length}} 项（{{voteDetail.min_votes}}-{{voteDetail.max_votes}}�?/view>
 
     <button 
       class="submit-btn" 
@@ -60,11 +60,11 @@
     </button>
   </view>
 
-  <!-- 已投票提示 -->
+  <!-- 已投票提�?-->
   <view class="voted-card" wx:if="{{voteDetail.has_voted}}">
-    <view class="voted-icon">✅</view>
-    <text class="voted-text">您已投过票</text>
-    <text class="voted-desc">每个业主只能投票一次</text>
+    <view class="voted-icon">�?/view>
+    <text class="voted-text">您已投过�?/text>
+    <text class="voted-desc">每个业主只能投票一�?/text>
     <button class="view-result-btn" bindtap="viewResult">查看结果</button>
   </view>
 
@@ -79,21 +79,21 @@
           <view class="result-fill" style="width: {{item.percentage * 100}}%"></view>
         </view>
         <view class="result-stats">
-          <text class="result-count">{{item.count}}票</text>
-          <text class="result-percent">{{(item.percentage * 100).toFixed(1)}}%</text>
+          <text class="result-count">{{item.count}}�?/text>
+          <text class="result-percent">{{item.percentageText}}%</text>
         </view>
       </view>
     </view>
 
     <view class="result-summary">
-      <text class="summary-label">总投票数：</text>
-      <text class="summary-value">{{voteResults.total_votes}}票</text>
+      <text class="summary-label">总投票数�?/text>
+      <text class="summary-value">{{voteResults.total_votes}}�?/text>
     </view>
 
     <view class="result-summary" wx:if="{{voteResults.passed !== null}}">
-      <text class="summary-label">投票结果：</text>
+      <text class="summary-label">投票结果�?/text>
       <text class="summary-value {{voteResults.passed ? 'pass' : 'fail'}}">
-        {{voteResults.passed ? '✅ 已通过' : '❌ 未通过'}}
+        {{voteResults.passed ? '�?已通过' : '�?未通过'}}
       </text>
     </view>
   </view>
@@ -101,7 +101,7 @@
   <!-- 委托投票 -->
   <view class="proxy-card" wx:if="{{voteDetail.status === 'active' && !voteDetail.has_voted}}">
     <view class="card-title">👥 委托投票</view>
-    <text class="proxy-desc">如无法参与投票，可委托其他业主代为投票</text>
-    <button class="proxy-btn" bindtap="assignProxy">设置委托人</button>
+    <text class="proxy-desc">如无法参与投票，可委托其他业主代为投�?/text>
+    <button class="proxy-btn" bindtap="assignProxy">设置委托�?/button>
   </view>
 </view>
