@@ -1,106 +1,21 @@
 <!--pages/profile/profile.wxml-->
 <view class="profile-container">
-  <!-- 用户信息卡片 -->
   <view class="user-card">
     <view class="user-info">
-      <image 
-        wx:if="{{userInfo.avatar_url}}" 
-        class="avatar" 
-        src="{{userInfo.avatar_url}}" 
-        mode="aspectFill"
-      ></image>
-      <view wx:else class="avatar-default">
-        <text class="avatar-icon">👤</text>
-      </view>
-      
+      <image wx:if="{{userInfo.avatar_url}}" class="avatar" src="{{userInfo.avatar_url}}" mode="aspectFill"></image>
+      <view wx:else class="avatar-default"><text class="avatar-icon">👤</text></view>
       <view class="user-details">
         <text class="nickname">{{userInfo.nickname || '微信用户'}}</text>
         <text class="phone" wx:if="{{userInfo.phone}}">📱 {{userInfo.phone}}</text>
         <text class="openid" wx:if="{{!userInfo.nickname && !userInfo.phone}}">ID: {{userInfo.openidSubstring}}...</text>
       </view>
     </view>
-    
-    <!-- 认证状�?-->
     <view class="verify-status" bindtap="goToVerify">
       <view class="status-badge {{verifyStatus}}">
-        <text class="badge-icon">{{verifyStatus === 'approved' ? '�? : verifyStatus === 'pending' ? '�? : '⚠️'}}</text>
+        <text class="badge-icon">{{verifyStatus === 'approved' ? '✅' : verifyStatus === 'pending' ? '⏳' : '⚠️'}}</text>
         <text class="badge-text">{{verifyText}}</text>
       </view>
-      <text class="arrow">�?/text>
+      <text class="arrow">›</text>
     </view>
-  </view>
-
-  <!-- 功能菜单 -->
-  <view class="menu-section">
-    <text class="section-title">我的服务</text>
-    
-    <view class="menu-list">
-      <!-- 我的投票 -->
-      <view class="menu-item" bindtap="navigateTo" data-url="/pages/vote/list">
-        <view class="menu-icon">🗳�?/view>
-        <text class="menu-text">我的投票</text>
-        <text class="menu-badge" wx:if="{{voteCount > 0}}">{{voteCount}}</text>
-        <text class="arrow">�?/text>
-      </view>
-
-      <!-- 我的会议 -->
-      <view class="menu-item" bindtap="navigateTo" data-url="/pages/meeting/list">
-        <view class="menu-icon">📋</view>
-        <text class="menu-text">我的会议</text>
-        <text class="menu-badge" wx:if="{{meetingCount > 0}}">{{meetingCount}}</text>
-        <text class="arrow">�?/text>
-      </view>
-
-      <!-- 我的房产 -->
-      <view class="menu-item" bindtap="navigateTo" data-url="/pages/profile/property">
-        <view class="menu-icon">🏠</view>
-        <text class="menu-text">我的房产</text>
-        <view class="menu-extra">
-          <text class="extra-text" wx:if="{{propertyInfo}}">{{propertyInfo.addressSubstring}}...</text>
-          <text class="extra-text" wx:else>未认�?/text>
-        </view>
-        <text class="arrow">�?/text>
-      </view>
-
-      <!-- 消息通知 -->
-      <view class="menu-item" bindtap="navigateTo" data-url="/pages/profile/notifications">
-        <view class="menu-icon">🔔</view>
-        <text class="menu-text">消息通知</text>
-        <text class="menu-badge" wx:if="{{noticeCount > 0}}">{{noticeCount}}</text>
-        <text class="arrow">�?/text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 设置 -->
-  <view class="menu-section">
-    <text class="section-title">设置</text>
-    
-    <view class="menu-list">
-      <!-- 关于我们 -->
-      <view class="menu-item" bindtap="showAbout">
-        <view class="menu-icon">ℹ️</view>
-        <text class="menu-text">关于我们</text>
-        <text class="arrow">�?/text>
-      </view>
-
-      <!-- 帮助与反�?-->
-      <view class="menu-item" bindtap="showFeedback">
-        <view class="menu-icon">�?/view>
-        <text class="menu-text">帮助与反�?/text>
-        <text class="arrow">�?/text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 退出登�?-->
-  <view class="logout-section">
-    <button class="logout-btn" bindtap="logout">退出登�?/button>
-  </view>
-
-  <!-- 底部信息 -->
-  <view class="footer">
-    <text class="version">版本号：v1.0.0</text>
-    <text class="copyright">© 2026 业主大会投票系统</text>
   </view>
 </view>
