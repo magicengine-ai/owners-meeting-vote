@@ -4,9 +4,8 @@
 
 // 配置
 const config = {
-  baseUrl: 'https://api.example.com', // 生产环境
-  // baseUrl: 'http://localhost:8000', // 开发环境
-  timeout: 10000,
+  baseUrl: 'https://owners-vote-234350-9-1411900181.sh.run.tcloudbase.com', // 生产环境
+  // baseUrl: 'http://localhost:8000', // 开发环�?  timeout: 10000,
 }
 
 // Token 存储
@@ -14,7 +13,7 @@ const TOKEN_KEY = 'access_token'
 const USER_INFO_KEY = 'userInfo'
 
 /**
- * 获取存储的 Token
+ * 获取存储�?Token
  */
 function getToken() {
   return wx.getStorageSync(TOKEN_KEY) || ''
@@ -76,7 +75,7 @@ function request(options) {
           // Token 失效，清除并跳转登录
           clearToken()
           wx.showToast({
-            title: '登录已过期',
+            title: '登录已过�?,
             icon: 'none'
           })
           setTimeout(() => {
@@ -84,7 +83,7 @@ function request(options) {
               url: '/pages/auth/login/login'
             })
           }, 1500)
-          reject({ error: 'unauthorized', message: '登录已过期' })
+          reject({ error: 'unauthorized', message: '登录已过�? })
         } else if (res.statusCode === 403) {
           // 权限不足
           wx.showToast({
@@ -126,8 +125,7 @@ function request(options) {
  * GET 请求
  * @param {String} url 请求地址
  * @param {Object} data 请求参数
- * @param {Object} header 请求头
- */
+ * @param {Object} header 请求�? */
 function get(url, data = {}, header = {}) {
   return request({ url, method: 'GET', data, header })
 }
@@ -136,8 +134,7 @@ function get(url, data = {}, header = {}) {
  * POST 请求
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
- * @param {Object} header 请求头
- */
+ * @param {Object} header 请求�? */
 function post(url, data = {}, header = {}) {
   return request({ url, method: 'POST', data, header })
 }
@@ -146,8 +143,7 @@ function post(url, data = {}, header = {}) {
  * PUT 请求
  * @param {String} url 请求地址
  * @param {Object} data 请求数据
- * @param {Object} header 请求头
- */
+ * @param {Object} header 请求�? */
 function put(url, data = {}, header = {}) {
   return request({ url, method: 'PUT', data, header })
 }
@@ -156,8 +152,7 @@ function put(url, data = {}, header = {}) {
  * DELETE 请求
  * @param {String} url 请求地址
  * @param {Object} data 请求参数
- * @param {Object} header 请求头
- */
+ * @param {Object} header 请求�? */
 function del(url, data = {}, header = {}) {
   return request({ url, method: 'DELETE', data, header })
 }
