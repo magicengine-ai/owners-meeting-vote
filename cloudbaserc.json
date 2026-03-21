@@ -36,7 +36,7 @@
           "WECHAT_APP_ID": "{{CLOUD_WECHAT_APPID}}",
           "WECHAT_APP_SECRET": "{{CLOUD_WECHAT_SECRET}}"
         },
-        "dockerfilePath": "./cloud-deploy/Dockerfile",
+        "dockerfilePath": "./Dockerfile",
         "buildDir": ".",
         "contextDir": "."
       },
@@ -62,7 +62,7 @@
               "name": "vote-api",
               "runtime": "CustomImage",
               "buildDir": ".",
-              "dockerfilePath": "./cloud-deploy/Dockerfile"
+              "dockerfilePath": "./Dockerfile"
             }
           ]
         }
