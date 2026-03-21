@@ -32,12 +32,12 @@ RUN ln -sf /usr/bin/python3.11 /usr/bin/python && \
 RUN pip3 install uvicorn -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 复制依赖文件并安�?
-COPY ../backend/requirements.txt .
+COPY backend/requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 复制应用代码
-COPY ../backend/src ./src
-COPY ../backend/main.py ./main.py
+COPY backend/src ./src
+COPY backend/main.py ./main.py
 
 # 创建日志目录（云托管会自动收�?stdout/stderr�?
 RUN mkdir -p logs
