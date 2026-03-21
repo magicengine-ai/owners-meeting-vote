@@ -1,0 +1,49 @@
+{
+  "version": "2.0",
+  "metadata": {
+    "name": "业主大会投票小程序 - 云托管流水线",
+    "description": "自动构建和部署到微信云托管"
+  },
+  "triggers": {
+    "push": {
+      "enabled": true,
+      "branches": ["main"],
+      "paths": {
+        "include": ["backend/**", "cloud-deploy/**"],
+        "exclude": ["*.md", "docs/**"]
+      }
+    }
+  },
+  "build": {
+    "type": "docker",
+    "dockerfile": "cloud-deploy/Dockerfile.cloud",
+    "context": ".",
+    "image": {
+      "repository": "vote-api",
+      "tag": "${GIT_COMMIT_SHORT}"
+    }
+  },
+  "deploy": {
+    "type": "cloudrun",
+    "serviceName": "vote-api",
+    "region": "ap-guangzhou",
+    "config": {
+      "cpu": 1,
+      "memory": 2048,
+      "minNum": 0,
+      "maxNum": 10,
+      "timeout": 30,
+      "envParams": {
+        "APP_VERSION": "${GIT_COMMIT_SHORT}",
+        "DEBUG": "false",
+        "PORT": "8080",
+        "WEB_CONCURRENCY": "2"
+      }
+    }
+  },
+  "notifications": {
+    "enabled": true,
+    "events": ["build_success", "build_failure", "deploy_success", "deploy_failure"],
+    "channels": ["wechat"]
+  }
+}

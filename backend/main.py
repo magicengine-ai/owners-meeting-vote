@@ -70,6 +70,22 @@ async def log_requests(request: Request, call_next):
     return response
 
 
+@app.middleware("http")
+async def log_wechat_user(request: Request, call_next):
+    """
+    记录微信用户信息（云托管环境）
+    
+    云托管会自动注入：
+    - X-WX-OPENID: 用户 OpenID
+    - X-WX-UNIONID: 用户 UnionID
+    """
+    openid = request.headers.get("X-WX-OPENID")
+    if openid:
+        logger.info(f"微信用户：{openid[:10]}...")  # 只记录前 10 位，保护隐私
+    response = await call_next(request)
+    return response
+
+
 # ==================== 路由 ====================
 
 # 健康检查
