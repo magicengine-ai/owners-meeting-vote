@@ -27,7 +27,18 @@ Page({
       const res = await get(`/api/vote/detail/${voteId}`)
       
       this.setData({
-        voteDetail: res,
+        voteDetail: {
+          ...res,
+          statusText: res.status === 'active' ? '������' : '�ѽ���',
+          startTimeText: res.start_time ? this.formatDate(res.start_time) : '',
+          endTimeText: res.end_time ? this.formatDate(res.end_time) : '',
+          totalVotes: res.total_votes || 0,
+          hasVoted: res.has_voted || false,
+          voteType: res.vote_type,
+          minVotes: res.min_votes,
+          maxVotes: res.max_votes,
+          options: res.options || []
+        },
         showResult: res.has_voted || res.status !== 'active'
       })
       
@@ -75,11 +86,9 @@ Page({
     } else {
       // 选择
       if (voteDetail.vote_type === 'single') {
-        // 单选
-        selectedOptions = [option]
+        // 单�?        selectedOptions = [option]
       } else {
-        // 多选
-        if (selectedOptions.length >= voteDetail.max_votes) {
+        // 多�?        if (selectedOptions.length >= voteDetail.max_votes) {
           wx.showToast({
             title: `最多选择${voteDetail.max_votes}项`,
             icon: 'none'
@@ -90,8 +99,7 @@ Page({
       }
     }
     
-    // 检查是否可以提交
-    const canSubmit = selectedOptions.length >= voteDetail.min_votes && 
+    // 检查是否可以提�?    const canSubmit = selectedOptions.length >= voteDetail.min_votes && 
                       selectedOptions.length <= voteDetail.max_votes
     
     this.setData({
@@ -108,11 +116,11 @@ Page({
     
     wx.showModal({
       title: '确认投票',
-      content: `确定要提交您的投票吗？\n\n您选择了：${selectedOptions.join('、')}`,
+      content: `确定要提交您的投票吗？\n\n您选择了：${selectedOptions.join('�?)}`,
       success: async (res) => {
         if (res.confirm) {
           try {
-            wx.showLoading({ title: '提交中...' })
+            wx.showLoading({ title: '提交�?..' })
             
             await post('/api/vote/submit', {
               vote_id: voteId,
@@ -157,12 +165,11 @@ Page({
   },
 
   /**
-   * 设置委托人
-   */
+   * 设置委托�?   */
   assignProxy() {
     wx.showModal({
       title: '委托投票',
-      content: '请选择您要委托的业主（功能开发中）',
+      content: '请选择您要委托的业主（功能开发中�?,
       showCancel: false,
       confirmText: '我知道了'
     })
