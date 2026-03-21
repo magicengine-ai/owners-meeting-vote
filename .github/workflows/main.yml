@@ -1,0 +1,45 @@
+name: Deploy to WeChat Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'backend/**'
+      - 'cloud-deploy/**'
+      - 'cloudbaserc.json'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Install CloudBase CLI
+      run: npm install -g @cloudbase/cli
+    
+    - name: Login to CloudBase
+      env:
+        CLOUDBASE_API_KEY: ${{ secrets.CLOUDBASE_API_KEY }}
+      run: |
+        cloudbase login --apiKey $CLOUDBASE_API_KEY        
+    
+    - name: Build Docker image
+      run: |
+        docker build -f cloud-deploy/Dockerfile.cloud \
+          -t vote-api:${{ github.sha }} \
+          .        
+    
+    - name: Deploy to Cloud Run
+      env:
+        CLOUDBASE_ENV_ID: ${{ secrets.CLOUDBASE_ENV_ID }}
+      run: |
+        cloudbase deploy -f cloudbaserc.json \
+          --env $CLOUDBASE_ENV_ID \
+          --version ${{ github.sha }}
