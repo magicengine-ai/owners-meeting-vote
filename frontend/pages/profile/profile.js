@@ -1,12 +1,12 @@
 // pages/profile/profile.js
 const app = getApp()
-const { get, post, getToken, setToken, setUserInfo, clearToken } = require('../../../utils/request.js')
+const { get, post, getToken, setToken, setUserInfo, clearToken } = require('../../utils/request.js')
 
 Page({
   data: {
     userInfo: null,
     verifyStatus: 'none',
-    verifyText: '未认证',
+    verifyText: '鏈璇?,
     propertyInfo: null,
     voteCount: 0,
     meetingCount: 0,
@@ -43,7 +43,7 @@ Page({
         this.loadPropertyInfo()
       }
     } catch (error) {
-      console.error('获取用户信息失败:', error)
+      console.error('鑾峰彇鐢ㄦ埛淇℃伅澶辫触:', error)
       if (error.error === 'unauthorized') {
         this.logout()
       }
@@ -53,16 +53,16 @@ Page({
   async loadVerifyStatus() {
     try {
       const res = await get('/api/auth/verify/status')
-      let verifyText = '未认证'
-      if (res.status === 'approved') verifyText = '已认证'
-      else if (res.status === 'pending') verifyText = '审核中'
-      else if (res.status === 'rejected') verifyText = '认证失败'
+      let verifyText = '鏈璇?
+      if (res.status === 'approved') verifyText = '宸茶璇?
+      else if (res.status === 'pending') verifyText = '瀹℃牳涓?
+      else if (res.status === 'rejected') verifyText = '璁よ瘉澶辫触'
       this.setData({ verifyStatus: res.status, verifyText })
       if (res.status === 'approved') {
         this.loadPropertyInfo()
       }
     } catch (error) {
-      console.error('获取认证状态失败:', error)
+      console.error('鑾峰彇璁よ瘉鐘舵€佸け璐?', error)
     }
   },
 
@@ -79,7 +79,7 @@ Page({
         })
       }
     } catch (error) {
-      console.error('加载房产信息失败:', error)
+      console.error('鍔犺浇鎴夸骇淇℃伅澶辫触:', error)
     }
   },
 
@@ -96,31 +96,31 @@ Page({
 
   showAbout() {
     wx.showModal({
-      title: '关于业主大会投票',
-      content: '版本号：v1.0.0\n\n业主大会投票系统是为小区业主提供的在线投票平台。\n\n© 2026 业主大会投票系统',
+      title: '鍏充簬涓氫富澶т細鎶曠エ',
+      content: '鐗堟湰鍙凤細v1.0.0\n\n涓氫富澶т細鎶曠エ绯荤粺鏄负灏忓尯涓氫富鎻愪緵鐨勫湪绾挎姇绁ㄥ钩鍙般€俓n\n漏 2026 涓氫富澶т細鎶曠エ绯荤粺',
       showCancel: false,
-      confirmText: '我知道了'
+      confirmText: '鎴戠煡閬撲簡'
     })
   },
 
   showFeedback() {
     wx.showModal({
-      title: '帮助与反馈',
-      content: '如有问题或建议，请联系：\n\n客服电话：400-XXX-XXXX\n邮箱：support@example.com\n\n工作时间：周一至周五 9:00-18:00',
+      title: '甯姪涓庡弽棣?,
+      content: '濡傛湁闂鎴栧缓璁紝璇疯仈绯伙細\n\n瀹㈡湇鐢佃瘽锛?00-XXX-XXXX\n閭锛歴upport@example.com\n\n宸ヤ綔鏃堕棿锛氬懆涓€鑷冲懆浜?9:00-18:00',
       showCancel: false,
-      confirmText: '我知道了'
+      confirmText: '鎴戠煡閬撲簡'
     })
   },
 
   logout() {
     wx.showModal({
-      title: '退出登录',
-      content: '确定要退出登录吗？',
+      title: '閫€鍑虹櫥褰?,
+      content: '纭畾瑕侀€€鍑虹櫥褰曞悧锛?,
       success: (res) => {
         if (res.confirm) {
           clearToken()
           wx.reLaunch({ url: '/pages/auth/login/login' })
-          wx.showToast({ title: '已退出登录', icon: 'success' })
+          wx.showToast({ title: '宸查€€鍑虹櫥褰?, icon: 'success' })
         }
       }
     })
