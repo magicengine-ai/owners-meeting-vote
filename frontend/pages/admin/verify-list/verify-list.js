@@ -4,171 +4,83 @@ const { get, post } = require('../../../utils/request.js')
 Page({
   data: {
     verifyList: [],
-    pendingCount: 0,
-    loading: false,
     page: 1,
-    pageSize: 20
+    pageSize: 20,
+    loading: false,
+    hasMore: true
   },
 
-  onLoad(options) {
+  onLoad() {
     this.loadVerifyList()
   },
 
-  onShow() {
-    // 鍒锋柊鍒楄〃
-    this.loadVerifyList()
-  },
-
-  onPullDownRefresh() {
-    this.setData({
-      page: 1,
-      verifyList: []
-    })
-    this.loadVerifyList().then(() => {
-      wx.stopPullDownRefresh()
-    })
-  },
-
-  /**
-   * 鍔犺浇瀹℃牳鍒楄〃
-   */
   async loadVerifyList() {
-    const { page, pageSize, verifyList } = this.data
-    
+    const { page, pageSize, verifyList, loading } = this.data
+    if (loading) return
+
     this.setData({ loading: true })
-    
+
     try {
-      const res = await get('/api/admin/verify/pending', {
+      const res = await get('/api/admin/verify/list', {
         page: page,
         page_size: pageSize
       })
-      
+
+      const newList = page === 1 ? res.list : [...verifyList, ...res.list]
+
       this.setData({
-        verifyList: page === 1 ? res.users : [...verifyList, ...res.users],
-        pendingCount: res.total,
-        loading: false
+        verifyList: newList,
+        page: page + 1,
+        loading: false,
+        hasMore: newList.length < res.total
       })
     } catch (error) {
-      console.error('鍔犺浇瀹℃牳鍒楄〃澶辫触:', error)
+      console.error('加载认证列表失败:', error)
       this.setData({ loading: false })
-      
-      wx.showToast({
-        title: error.message || '鍔犺浇澶辫触',
-        icon: 'none'
-      })
+      wx.showToast({ title: error.message || '加载失败', icon: 'none' })
     }
   },
 
-  /**
-   * 璺宠浆鍒拌鎯呴〉
-   */
-  goToDetail(e) {
-    const user = e.currentTarget.dataset.user
-    wx.navigateTo({
-      url: `/pages/admin/verify-detail/verify-detail?user_id=${user.user_id}`
-    })
+  onReachBottom() {
+    if (this.data.hasMore && !this.data.loading) {
+      this.loadVerifyList()
+    }
   },
 
-  /**
-   * 閫氳繃瀹℃牳
-   */
   async approveVerify(e) {
-    const user = e.currentTarget.dataset.user
-    
+    const { verifyId } = e.currentTarget.dataset
     wx.showModal({
-      title: '瀹℃牳閫氳繃',
-      content: `纭畾瑕侀€氳繃鐢ㄦ埛"${user.nickname || '寰俊鐢ㄦ埛'}"鐨勮璇佺敵璇峰悧锛焋,
+      title: '确认通过',
+      content: '确定通过该用户的认证申请吗？',
       success: async (res) => {
         if (res.confirm) {
           try {
-            wx.showLoading({ title: '澶勭悊涓?..' })
-            
-            await post('/api/admin/verify/approve', {
-              user_id: user.user_id
-            })
-            
-            wx.hideLoading()
-            
-            wx.showToast({
-              title: '宸查€氳繃',
-              icon: 'success'
-            })
-            
-            // 浠庡垪琛ㄤ腑绉婚櫎
-            const verifyList = this.data.verifyList.filter(
-              item => item.user_id !== user.user_id
-            )
-            this.setData({
-              verifyList,
-              pendingCount: this.data.pendingCount - 1
-            })
-            
+            await post(`/api/admin/verify/${verifyId}/approve`, {})
+            wx.showToast({ title: '已通过', icon: 'success' })
+            this.setData({ page: 1, verifyList: [], hasMore: true })
+            this.loadVerifyList()
           } catch (error) {
-            wx.hideLoading()
-            console.error('瀹℃牳閫氳繃澶辫触:', error)
-            wx.showToast({
-              title: error.message || '鎿嶄綔澶辫触',
-              icon: 'none'
-            })
+            wx.showToast({ title: error.message || '操作失败', icon: 'none' })
           }
         }
       }
     })
   },
 
-  /**
-   * 鎷掔粷瀹℃牳
-   */
   async rejectVerify(e) {
-    const user = e.currentTarget.dataset.user
-    
+    const { verifyId } = e.currentTarget.dataset
     wx.showModal({
-      title: '瀹℃牳鎷掔粷',
-      editable: true,
-      placeholderText: '璇疯緭鍏ユ嫆缁濆師鍥狅紙鑷冲皯 10 瀛楋級',
+      title: '确认拒绝',
+      content: '确定拒绝该用户的认证申请吗？',
       success: async (res) => {
         if (res.confirm) {
-          const reason = res.content || ''
-          
-          if (reason.length < 10) {
-            wx.showToast({
-              title: '鎷掔粷鍘熷洜鑷冲皯 10 瀛?,
-              icon: 'none'
-            })
-            return
-          }
-          
           try {
-            wx.showLoading({ title: '澶勭悊涓?..' })
-            
-            await post('/api/admin/verify/reject', {
-              user_id: user.user_id,
-              reason: reason
-            })
-            
-            wx.hideLoading()
-            
-            wx.showToast({
-              title: '宸叉嫆缁?,
-              icon: 'success'
-            })
-            
-            // 浠庡垪琛ㄤ腑绉婚櫎
-            const verifyList = this.data.verifyList.filter(
-              item => item.user_id !== user.user_id
-            )
-            this.setData({
-              verifyList,
-              pendingCount: this.data.pendingCount - 1
-            })
-            
+            await post(`/api/admin/verify/${verifyId}/reject`, {})
+            wx.showToast({ title: '已拒绝', icon: 'success' })
+            this.setData({ page: 1, verifyList: [], hasMore: true })
+            this.loadVerifyList()
           } catch (error) {
-            wx.hideLoading()
-            console.error('瀹℃牳鎷掔粷澶辫触:', error)
-            wx.showToast({
-              title: error.message || '鎿嶄綔澶辫触',
-              icon: 'none'
-            })
+            wx.showToast({ title: error.message || '操作失败', icon: 'none' })
           }
         }
       }
