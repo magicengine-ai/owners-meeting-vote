@@ -1,5 +1,5 @@
 // pages/vote/list/list.js
-const { get } = require('../../../../utils/request.js')
+const { get } = require('../../../utils/request.js')
 
 Page({
   data: {
@@ -17,7 +17,7 @@ Page({
   },
 
   onShow() {
-    // 刷新列表
+    // 鍒锋柊鍒楄〃
     this.setData({
       page: 1,
       voteList: [],
@@ -44,7 +44,7 @@ Page({
   },
 
   /**
-   * 切换状态筛选
+   * 鍒囨崲鐘舵€佺瓫閫?
    */
   changeStatus(e) {
     const status = e.currentTarget.dataset.status
@@ -58,7 +58,7 @@ Page({
   },
 
   /**
-   * 加载投票列表
+   * 鍔犺浇鎶曠エ鍒楄〃
    */
   async loadVoteList() {
     const { page, pageSize, voteList, currentStatus, loading } = this.data
@@ -84,18 +84,18 @@ Page({
         hasMore: newVotes.length < res.total
       })
     } catch (error) {
-      console.error('加载投票列表失败:', error)
+      console.error('鍔犺浇鎶曠エ鍒楄〃澶辫触:', error)
       this.setData({ loading: false })
       
       wx.showToast({
-        title: error.message || '加载失败',
+        title: error.message || '鍔犺浇澶辫触',
         icon: 'none'
       })
     }
   },
 
   /**
-   * 跳转到详情页
+   * 璺宠浆鍒拌鎯呴〉
    */
   goToDetail(e) {
     const voteId = e.currentTarget.dataset['vote-id']

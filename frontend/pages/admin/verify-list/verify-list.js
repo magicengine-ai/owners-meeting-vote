@@ -1,5 +1,5 @@
 // pages/admin/verify-list/verify-list.js
-const { get, post } = require('../../../../utils/request.js')
+const { get, post } = require('../../../utils/request.js')
 
 Page({
   data: {
@@ -15,7 +15,7 @@ Page({
   },
 
   onShow() {
-    // 刷新列表
+    // 鍒锋柊鍒楄〃
     this.loadVerifyList()
   },
 
@@ -30,7 +30,7 @@ Page({
   },
 
   /**
-   * 加载审核列表
+   * 鍔犺浇瀹℃牳鍒楄〃
    */
   async loadVerifyList() {
     const { page, pageSize, verifyList } = this.data
@@ -49,18 +49,18 @@ Page({
         loading: false
       })
     } catch (error) {
-      console.error('加载审核列表失败:', error)
+      console.error('鍔犺浇瀹℃牳鍒楄〃澶辫触:', error)
       this.setData({ loading: false })
       
       wx.showToast({
-        title: error.message || '加载失败',
+        title: error.message || '鍔犺浇澶辫触',
         icon: 'none'
       })
     }
   },
 
   /**
-   * 跳转到详情页
+   * 璺宠浆鍒拌鎯呴〉
    */
   goToDetail(e) {
     const user = e.currentTarget.dataset.user
@@ -70,18 +70,18 @@ Page({
   },
 
   /**
-   * 通过审核
+   * 閫氳繃瀹℃牳
    */
   async approveVerify(e) {
     const user = e.currentTarget.dataset.user
     
     wx.showModal({
-      title: '审核通过',
-      content: `确定要通过用户"${user.nickname || '微信用户'}"的认证申请吗？`,
+      title: '瀹℃牳閫氳繃',
+      content: `纭畾瑕侀€氳繃鐢ㄦ埛"${user.nickname || '寰俊鐢ㄦ埛'}"鐨勮璇佺敵璇峰悧锛焋,
       success: async (res) => {
         if (res.confirm) {
           try {
-            wx.showLoading({ title: '处理中...' })
+            wx.showLoading({ title: '澶勭悊涓?..' })
             
             await post('/api/admin/verify/approve', {
               user_id: user.user_id
@@ -90,11 +90,11 @@ Page({
             wx.hideLoading()
             
             wx.showToast({
-              title: '已通过',
+              title: '宸查€氳繃',
               icon: 'success'
             })
             
-            // 从列表中移除
+            // 浠庡垪琛ㄤ腑绉婚櫎
             const verifyList = this.data.verifyList.filter(
               item => item.user_id !== user.user_id
             )
@@ -105,9 +105,9 @@ Page({
             
           } catch (error) {
             wx.hideLoading()
-            console.error('审核通过失败:', error)
+            console.error('瀹℃牳閫氳繃澶辫触:', error)
             wx.showToast({
-              title: error.message || '操作失败',
+              title: error.message || '鎿嶄綔澶辫触',
               icon: 'none'
             })
           }
@@ -117,29 +117,29 @@ Page({
   },
 
   /**
-   * 拒绝审核
+   * 鎷掔粷瀹℃牳
    */
   async rejectVerify(e) {
     const user = e.currentTarget.dataset.user
     
     wx.showModal({
-      title: '审核拒绝',
+      title: '瀹℃牳鎷掔粷',
       editable: true,
-      placeholderText: '请输入拒绝原因（至少 10 字）',
+      placeholderText: '璇疯緭鍏ユ嫆缁濆師鍥狅紙鑷冲皯 10 瀛楋級',
       success: async (res) => {
         if (res.confirm) {
           const reason = res.content || ''
           
           if (reason.length < 10) {
             wx.showToast({
-              title: '拒绝原因至少 10 字',
+              title: '鎷掔粷鍘熷洜鑷冲皯 10 瀛?,
               icon: 'none'
             })
             return
           }
           
           try {
-            wx.showLoading({ title: '处理中...' })
+            wx.showLoading({ title: '澶勭悊涓?..' })
             
             await post('/api/admin/verify/reject', {
               user_id: user.user_id,
@@ -149,11 +149,11 @@ Page({
             wx.hideLoading()
             
             wx.showToast({
-              title: '已拒绝',
+              title: '宸叉嫆缁?,
               icon: 'success'
             })
             
-            // 从列表中移除
+            // 浠庡垪琛ㄤ腑绉婚櫎
             const verifyList = this.data.verifyList.filter(
               item => item.user_id !== user.user_id
             )
@@ -164,9 +164,9 @@ Page({
             
           } catch (error) {
             wx.hideLoading()
-            console.error('审核拒绝失败:', error)
+            console.error('瀹℃牳鎷掔粷澶辫触:', error)
             wx.showToast({
-              title: error.message || '操作失败',
+              title: error.message || '鎿嶄綔澶辫触',
               icon: 'none'
             })
           }

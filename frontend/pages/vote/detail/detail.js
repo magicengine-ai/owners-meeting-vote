@@ -1,5 +1,5 @@
 // pages/vote/detail/detail.js
-const { get, post } = require('../../../../utils/request.js')
+const { get, post } = require('../../../utils/request.js')
 
 Page({
   data: {
@@ -24,7 +24,7 @@ Page({
       this.setData({
         voteDetail: {
           ...res,
-          statusText: res.status === 'active' ? '进行中' : '已结束',
+          statusText: res.status === 'active' ? '杩涜涓? : '宸茬粨鏉?,
           startTimeText: res.start_time ? this.formatDate(res.start_time) : '',
           endTimeText: res.end_time ? this.formatDate(res.end_time) : '',
           totalVotes: res.total_votes || 0,
@@ -37,8 +37,8 @@ Page({
         this.loadVoteResult()
       }
     } catch (error) {
-      console.error('加载投票详情失败:', error)
-      wx.showToast({ title: error.message || '加载失败', icon: 'none' })
+      console.error('鍔犺浇鎶曠エ璇︽儏澶辫触:', error)
+      wx.showToast({ title: error.message || '鍔犺浇澶辫触', icon: 'none' })
     }
   },
 
@@ -51,7 +51,7 @@ Page({
       }))
       this.setData({ voteResults })
     } catch (error) {
-      console.error('加载投票结果失败:', error)
+      console.error('鍔犺浇鎶曠エ缁撴灉澶辫触:', error)
     }
   },
 
@@ -69,7 +69,7 @@ Page({
     } else {
       const { voteDetail } = this.data
       if (voteDetail.max_votes && selectedOptions.length >= voteDetail.max_votes) {
-        wx.showToast({ title: `最多选择${voteDetail.max_votes}项`, icon: 'none' })
+        wx.showToast({ title: `鏈€澶氶€夋嫨${voteDetail.max_votes}椤筦, icon: 'none' })
         return
       }
       selectedOptions.push(option)
@@ -81,17 +81,17 @@ Page({
   async submitVote() {
     const { voteId, selectedOptions } = this.data
     wx.showModal({
-      title: '确认投票',
-      content: `确定要提交您的投票吗？\n\n您选择了：${selectedOptions.join('、')}`,
+      title: '纭鎶曠エ',
+      content: `纭畾瑕佹彁浜ゆ偍鐨勬姇绁ㄥ悧锛焅n\n鎮ㄩ€夋嫨浜嗭細${selectedOptions.join('銆?)}`,
       success: async (res) => {
         if (res.confirm) {
           try {
             await post(`/api/vote/${voteId}/submit`, { options: selectedOptions })
-            wx.showToast({ title: '投票成功', icon: 'success' })
+            wx.showToast({ title: '鎶曠エ鎴愬姛', icon: 'success' })
             this.setData({ showResult: true })
             this.loadVoteResult()
           } catch (error) {
-            wx.showToast({ title: error.message || '投票失败', icon: 'none' })
+            wx.showToast({ title: error.message || '鎶曠エ澶辫触', icon: 'none' })
           }
         }
       }
@@ -103,6 +103,6 @@ Page({
   },
 
   assignProxy() {
-    wx.showToast({ title: '功能开发中', icon: 'none' })
+    wx.showToast({ title: '鍔熻兘寮€鍙戜腑', icon: 'none' })
   }
 })

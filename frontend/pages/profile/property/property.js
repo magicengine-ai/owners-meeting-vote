@@ -1,11 +1,11 @@
 // pages/profile/property/property.js
-const { get } = require('../../../../utils/request.js')
+const { get } = require('../../../utils/request.js')
 
 Page({
   data: {
     propertyInfo: null,
     verifyStatus: 'none',
-    verifyText: '未认证',
+    verifyText: '鏈璇?,
     voteRights: 0,
     votePercent: 0
   },
@@ -15,25 +15,25 @@ Page({
   },
 
   onShow() {
-    // 刷新认证状态
+    // 鍒锋柊璁よ瘉鐘舵€?
     this.loadVerifyStatus()
   },
 
   /**
-   * 加载房产信息
+   * 鍔犺浇鎴夸骇淇℃伅
    */
   async loadPropertyInfo() {
     try {
-      // TODO: 实现获取房产信息接口
+      // TODO: 瀹炵幇鑾峰彇鎴夸骇淇℃伅鎺ュ彛
       // const res = await get('/api/user/property')
       
-      // 临时模拟数据
+      // 涓存椂妯℃嫙鏁版嵁
       const userInfo = wx.getStorageSync('userInfo')
       if (userInfo && userInfo.property_address) {
         const propertyInfo = {
-          owner_name: userInfo.property_owner || '张三',
-          cert_number: userInfo.property_cert_number || '京 (2024) 朝阳区不动产权第 1234567 号',
-          address: userInfo.property_address || '北京市朝阳区 XX 路 XX 号院',
+          owner_name: userInfo.property_owner || '寮犱笁',
+          cert_number: userInfo.property_cert_number || '浜?(2024) 鏈濋槼鍖轰笉鍔ㄤ骇鏉冪 1234567 鍙?,
+          address: userInfo.property_address || '鍖椾含甯傛湞闃冲尯 XX 璺?XX 鍙烽櫌',
           area: userInfo.property_area || 89.5,
           verified_at: userInfo.verified_at || '2026-03-12'
         }
@@ -43,28 +43,28 @@ Page({
         this.setData({
           propertyInfo,
           voteRights,
-          votePercent: (voteRights / 10000 * 100).toFixed(2) // 假设总面积 10000 票
+          votePercent: (voteRights / 10000 * 100).toFixed(2) // 鍋囪鎬婚潰绉?10000 绁?
         })
       }
     } catch (error) {
-      console.error('加载房产信息失败:', error)
+      console.error('鍔犺浇鎴夸骇淇℃伅澶辫触:', error)
     }
   },
 
   /**
-   * 加载认证状态
+   * 鍔犺浇璁よ瘉鐘舵€?
    */
   async loadVerifyStatus() {
     try {
       const res = await get('/api/auth/verify/status')
       
-      let verifyText = '未认证'
+      let verifyText = '鏈璇?
       if (res.status === 'approved') {
-        verifyText = '已认证'
+        verifyText = '宸茶璇?
       } else if (res.status === 'pending') {
-        verifyText = '审核中'
+        verifyText = '瀹℃牳涓?
       } else if (res.status === 'rejected') {
-        verifyText = '认证失败'
+        verifyText = '璁よ瘉澶辫触'
       }
       
       this.setData({
@@ -72,12 +72,12 @@ Page({
         verifyText
       })
     } catch (error) {
-      console.error('获取认证状态失败:', error)
+      console.error('鑾峰彇璁よ瘉鐘舵€佸け璐?', error)
     }
   },
 
   /**
-   * 跳转到认证页面
+   * 璺宠浆鍒拌璇侀〉闈?
    */
   goToVerify() {
     wx.navigateTo({
@@ -86,12 +86,12 @@ Page({
   },
 
   /**
-   * 重新认证
+   * 閲嶆柊璁よ瘉
    */
   reVerify() {
     wx.showModal({
-      title: '重新认证',
-      content: '确定要重新提交房产证认证吗？',
+      title: '閲嶆柊璁よ瘉',
+      content: '纭畾瑕侀噸鏂版彁浜ゆ埧浜ц瘉璁よ瘉鍚楋紵',
       success: (res) => {
         if (res.confirm) {
           wx.navigateTo({

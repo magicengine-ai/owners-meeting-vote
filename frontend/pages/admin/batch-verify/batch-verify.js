@@ -1,5 +1,5 @@
 // pages/admin/batch-verify/batch-verify.js
-const { get, post } = require('../../../../utils/request.js')
+const { get, post } = require('../../../utils/request.js')
 
 Page({
   data: {
@@ -33,7 +33,7 @@ Page({
   },
 
   /**
-   * 加载审核列表
+   * 鍔犺浇瀹℃牳鍒楄〃
    */
   async loadVerifyList() {
     const { page, pageSize, verifyList } = this.data
@@ -52,18 +52,18 @@ Page({
         loading: false
       })
     } catch (error) {
-      console.error('加载审核列表失败:', error)
+      console.error('鍔犺浇瀹℃牳鍒楄〃澶辫触:', error)
       this.setData({ loading: false })
       
       wx.showToast({
-        title: error.message || '加载失败',
+        title: error.message || '鍔犺浇澶辫触',
         icon: 'none'
       })
     }
   },
 
   /**
-   * 切换选择
+   * 鍒囨崲閫夋嫨
    */
   toggleSelect(e) {
     const userId = e.currentTarget.dataset.userId
@@ -83,7 +83,7 @@ Page({
   },
 
   /**
-   * 全选/取消全选
+   * 鍏ㄩ€?鍙栨秷鍏ㄩ€?
    */
   toggleSelectAll() {
     const { selectAll, verifyList } = this.data
@@ -102,26 +102,26 @@ Page({
   },
 
   /**
-   * 批量通过
+   * 鎵归噺閫氳繃
    */
   async batchApprove() {
     const { selectedIds } = this.data
     
     if (selectedIds.length === 0) {
       wx.showToast({
-        title: '请选择要审核的用户',
+        title: '璇烽€夋嫨瑕佸鏍哥殑鐢ㄦ埛',
         icon: 'none'
       })
       return
     }
     
     wx.showModal({
-      title: '批量通过',
-      content: `确定要通过选中的 ${selectedIds.length} 个用户的认证申请吗？`,
+      title: '鎵归噺閫氳繃',
+      content: `纭畾瑕侀€氳繃閫変腑鐨?${selectedIds.length} 涓敤鎴风殑璁よ瘉鐢宠鍚楋紵`,
       success: async (res) => {
         if (res.confirm) {
           try {
-            wx.showLoading({ title: '处理中...' })
+            wx.showLoading({ title: '澶勭悊涓?..' })
             
             const result = await post('/api/admin/verify/batch', {
               user_ids: selectedIds,
@@ -131,11 +131,11 @@ Page({
             wx.hideLoading()
             
             wx.showToast({
-              title: `成功${result.success_count}个，失败${result.failed_count}个`,
+              title: `鎴愬姛${result.success_count}涓紝澶辫触${result.failed_count}涓猔,
               icon: 'success'
             })
             
-            // 刷新列表
+            // 鍒锋柊鍒楄〃
             this.setData({
               selectedIds: [],
               selectAll: false
@@ -144,9 +144,9 @@ Page({
             
           } catch (error) {
             wx.hideLoading()
-            console.error('批量通过失败:', error)
+            console.error('鎵归噺閫氳繃澶辫触:', error)
             wx.showToast({
-              title: error.message || '操作失败',
+              title: error.message || '鎿嶄綔澶辫触',
               icon: 'none'
             })
           }
@@ -156,37 +156,37 @@ Page({
   },
 
   /**
-   * 批量拒绝
+   * 鎵归噺鎷掔粷
    */
   async batchReject() {
     const { selectedIds } = this.data
     
     if (selectedIds.length === 0) {
       wx.showToast({
-        title: '请选择要审核的用户',
+        title: '璇烽€夋嫨瑕佸鏍哥殑鐢ㄦ埛',
         icon: 'none'
       })
       return
     }
     
     wx.showModal({
-      title: '批量拒绝',
+      title: '鎵归噺鎷掔粷',
       editable: true,
-      placeholderText: '请输入拒绝原因（至少 10 字）',
+      placeholderText: '璇疯緭鍏ユ嫆缁濆師鍥狅紙鑷冲皯 10 瀛楋級',
       success: async (res) => {
         if (res.confirm) {
           const reason = res.content || ''
           
           if (reason.length < 10) {
             wx.showToast({
-              title: '拒绝原因至少 10 字',
+              title: '鎷掔粷鍘熷洜鑷冲皯 10 瀛?,
               icon: 'none'
             })
             return
           }
           
           try {
-            wx.showLoading({ title: '处理中...' })
+            wx.showLoading({ title: '澶勭悊涓?..' })
             
             const result = await post('/api/admin/verify/batch', {
               user_ids: selectedIds,
@@ -197,11 +197,11 @@ Page({
             wx.hideLoading()
             
             wx.showToast({
-              title: `成功${result.success_count}个，失败${result.failed_count}个`,
+              title: `鎴愬姛${result.success_count}涓紝澶辫触${result.failed_count}涓猔,
               icon: 'success'
             })
             
-            // 刷新列表
+            // 鍒锋柊鍒楄〃
             this.setData({
               selectedIds: [],
               selectAll: false
@@ -210,9 +210,9 @@ Page({
             
           } catch (error) {
             wx.hideLoading()
-            console.error('批量拒绝失败:', error)
+            console.error('鎵归噺鎷掔粷澶辫触:', error)
             wx.showToast({
-              title: error.message || '操作失败',
+              title: error.message || '鎿嶄綔澶辫触',
               icon: 'none'
             })
           }
