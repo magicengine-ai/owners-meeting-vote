@@ -18,18 +18,46 @@
       <text class="info-value">{{voteDetail.totalVotes}}票</text>
     </view>
   </view>
-  <view class="options-card" wx:if="{{voteDetail.status=='active' && !voteDetail.hasVoted}}">
+  
+  <view class="options-card" wx:if="{{voteDetail.status === 'active' && !voteDetail.hasVoted}}">
+    <view class="card-title">请选择您的意见</view>
     <view class="options-list">
-      <view class="option-item" wx:for="{{voteDetail.options}}" wx:key="*this" bindtap="toggleOption">
+      <view 
+        class="option-item {{selectedOptions.includes(item) ? 'selected' : ''}}" 
+        wx:for="{{voteDetail.options}}" 
+        wx:key="*this" 
+        bindtap="toggleOption"
+        data-option="{{item}}"
+      >
+        <view class="option-radio">
+          <view class="radio-dot {{selectedOptions.includes(item) ? 'checked' : ''}}"></view>
+        </view>
         <text class="option-text">{{item}}</text>
       </view>
     </view>
-    <button class="submit-btn" bindtap="submitVote">提交投票</button>
+    <view class="selected-count">已选择 {{selectedOptions.length}} 项</view>
+    <button class="submit-btn" bindtap="submitVote" disabled="{{!canSubmit}}">
+      提交投票
+    </button>
   </view>
+  
   <view class="result-card" wx:if="{{showResult}}">
-    <view class="result-item" wx:for="{{voteResults}}" wx:key="option">
-      <text class="result-option">{{item.option}}</text>
-      <text class="result-count">{{item.count}}票 ({{item.percentageText}}%)</text>
+    <view class="card-title">📊 投票结果</view>
+    <view class="result-list">
+      <view class="result-item" wx:for="{{voteResults}}" wx:key="option">
+        <text class="result-option">{{item.option}}</text>
+        <view class="result-bar">
+          <view class="result-fill" style="width: {{item.percentage}}%"></view>
+        </view>
+        <view class="result-stats">
+          <text class="result-count">{{item.count}}票</text>
+          <text class="result-percent">{{item.percentageText}}%</text>
+        </view>
+      </view>
+    </view>
+    <view class="result-summary">
+      <text class="summary-label">总投票数：</text>
+      <text class="summary-value">{{voteResults.total_votes}}票</text>
     </view>
   </view>
 </view>
