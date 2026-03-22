@@ -1,34 +1,8 @@
 // pages/vote/detail/detail.js
 const { get, post } = require('../../../utils/request.js')
 
-// 开发环境：使用模拟数据
-const USE_MOCK_DATA = true
-
-const MOCK_VOTE_DETAIL = {
-  id: 1,
-  title: '关于聘请新物业公司的投票',
-  description: '本小区现有物业服务合同即将到期，经业委会研究，拟聘请新的物业公司提供服务。请各位业主参与投票。',
-  status: 'active',
-  start_time: 1710921600,
-  end_time: 1711785600,
-  total_votes: 156,
-  has_voted: false,
-  vote_type: 'single',
-  min_votes: 1,
-  max_votes: 1,
-  options: ['同意', '反对', '弃权'],
-  total_households: 500
-}
-
-const MOCK_VOTE_RESULT = {
-  results: [
-    { option: '同意', count: 120, percentage: 0.77 },
-    { option: '反对', count: 25, percentage: 0.16 },
-    { option: '弃权', count: 11, percentage: 0.07 }
-  ],
-  total_votes: 156,
-  passed: true
-}
+// 开发环境：设置为 false 使用真实 API
+const USE_MOCK_DATA = false
 
 Page({
   data: {
@@ -51,7 +25,21 @@ Page({
     
     if (USE_MOCK_DATA) {
       // 使用模拟数据
-      const res = MOCK_VOTE_DETAIL
+      const res = {
+        id: voteId,
+        title: '测试投票',
+        description: '这是一个测试投票',
+        status: 'active',
+        start_time: Date.now() / 1000 - 86400,
+        end_time: Date.now() / 1000 + 86400 * 7,
+        total_votes: 100,
+        has_voted: false,
+        vote_type: 'single',
+        min_votes: 1,
+        max_votes: 1,
+        options: ['同意', '反对', '弃权'],
+        total_households: 500
+      }
       this.setData({
         voteDetail: {
           ...res,
@@ -86,13 +74,34 @@ Page({
       }
     } catch (error) {
       console.error('加载投票详情失败:', error)
-      wx.showToast({ title: error.message || '加载失败', icon: 'none' })
+      
+      // 如果是 401 错误，提示用户先登录
+      if (error.error === 'unauthorized') {
+        wx.showModal({
+          title: '提示',
+          content: '请先登录',
+          showCancel: false,
+          success: () => {
+            wx.navigateTo({ url: '/pages/auth/login/login' })
+          }
+        })
+      } else {
+        wx.showToast({ title: error.message || '加载失败', icon: 'none' })
+      }
     }
   },
 
   async loadVoteResult() {
     if (USE_MOCK_DATA) {
-      const res = MOCK_VOTE_RESULT
+      const res = {
+        results: [
+          { option: '同意', count: 70, percentage: 0.7 },
+          { option: '反对', count: 20, percentage: 0.2 },
+          { option: '弃权', count: 10, percentage: 0.1 }
+        ],
+        total_votes: 100,
+        passed: true
+      }
       const voteResults = res.results.map(item => ({
         ...item,
         percentageText: (item.percentage * 100).toFixed(1)
@@ -156,7 +165,19 @@ Page({
             this.setData({ showResult: true })
             this.loadVoteResult()
           } catch (error) {
-            wx.showToast({ title: error.message || '投票失败', icon: 'none' })
+            console.error('投票失败:', error)
+            if (error.error === 'unauthorized') {
+              wx.showModal({
+                title: '提示',
+                content: '请先登录',
+                showCancel: false,
+                success: () => {
+                  wx.navigateTo({ url: '/pages/auth/login/login' })
+                }
+              })
+            } else {
+              wx.showToast({ title: error.message || '投票失败', icon: 'none' })
+            }
           }
         }
       }
