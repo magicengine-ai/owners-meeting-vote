@@ -1,6 +1,25 @@
 """
 业主大会投票小程序 - 主应用入口
 """
+
+# ==================== SSL 补丁（必须在其他导入之前）====================
+# 微信云托管环境需要禁用微信 API 的 SSL 验证
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+# 重写 requests 的 verify 参数，只对微信 API 禁用 SSL 验证
+import requests
+_original_request = requests.Session.request
+
+def _patched_request(self, method, url, *args, **kwargs):
+    if 'api.weixin.qq.com' in url:
+        kwargs['verify'] = False
+        logger.debug(f"SSL 补丁：对微信 API 禁用 SSL 验证 - {url}")
+    return _original_request(self, method, url, *args, **kwargs)
+
+requests.Session.request = _patched_request
+# ==================== SSL 补丁结束 ====================
+
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
