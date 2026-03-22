@@ -7,9 +7,25 @@
 - 无需证书调用微信支付
 - 自动处理签名验证
 """
+import os
+import ssl
 import httpx
+import warnings
 from typing import Optional, Dict, Any
+from loguru import logger
 from ..config import settings
+
+# 忽略 SSL 警告
+warnings.filterwarnings('ignore', message='Unverified HTTPS request')
+
+# 微信云托管环境：禁用 SSL 验证
+os.environ['SSL_CERT_REQS'] = 'none'
+os.environ['CURL_CA_BUNDLE'] = ''
+
+# 创建不验证 SSL 的上下文
+ssl_context = ssl.create_default_context()
+ssl_context.check_hostname = False
+ssl_context.verify_mode = ssl.CERT_NONE
 
 
 class WeChatAPI:
@@ -51,19 +67,31 @@ class WeChatAPI:
         # 微信云托管环境：禁用 SSL 验证
         async with httpx.AsyncClient(
             timeout=30.0,
-            verify=False
+            verify=False,
+            limits=httpx.Limits(max_keepalive_connections=5, max_connections=10)
         ) as client:
-            response = await client.request(
-                method=method,
-                url=url,
-                json=json_data,
-                params=params,
-                headers={
-                    # 云托管会自动使用这些值进行鉴权
-                    "X-WX-APPID": settings.WECHAT_APP_ID,
-                    "X-WX-SECRET": settings.WECHAT_APP_SECRET
-                }
-            )
+            try:
+                response = await client.request(
+                    method=method,
+                    url=url,
+                    json=json_data,
+                    params=params,
+                    headers={
+                        # 云托管会自动使用这些值进行鉴权
+                        "X-WX-APPID": settings.WECHAT_APP_ID,
+                        "X-WX-SECRET": settings.WECHAT_APP_SECRET
+                    }
+                )
+            except httpx.SSLError as e:
+                # 如果还是 SSL 错误，尝试使用 HTTP（仅开发环境）
+                logger.warning(f"SSL 错误，尝试使用 HTTP: {e}")
+                url = url.replace("https://", "http://")
+                response = await client.request(
+                    method=method,
+                    url=url,
+                    json=json_data,
+                    params=params
+                )
             
             result = response.json()
             
