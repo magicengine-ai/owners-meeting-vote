@@ -23,14 +23,14 @@
     <view class="card-title">请选择您的意见</view>
     <view class="options-list">
       <view 
-        class="option-item {{selectedOptions.includes(item) ? 'selected' : ''}}" 
         wx:for="{{voteDetail.options}}" 
         wx:key="*this" 
+        class="option-item {{selectedOptions.indexOf(item) > -1 ? 'selected' : ''}}"
         bindtap="toggleOption"
         data-option="{{item}}"
       >
         <view class="option-radio">
-          <view class="radio-dot {{selectedOptions.includes(item) ? 'checked' : ''}}"></view>
+          <view class="radio-dot {{selectedOptions.indexOf(item) > -1 ? 'checked' : ''}}"></view>
         </view>
         <text class="option-text">{{item}}</text>
       </view>
