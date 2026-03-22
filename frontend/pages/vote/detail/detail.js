@@ -2,7 +2,7 @@
 const { get, post } = require('../../../utils/request.js')
 
 // 开发环境：设置为 true 使用模拟数据，false 使用真实 API
-const USE_MOCK_DATA = true
+const USE_MOCK_DATA = false
 
 Page({
   data: {
@@ -143,7 +143,6 @@ Page({
     const clickedText = e.currentTarget.dataset.option
     const { voteDetail, selectedOptions } = this.data
     
-    // 如果已经投过票，不允许再操作
     if (voteDetail.hasVoted) {
       wx.showToast({ title: '您已投过票', icon: 'none' })
       return
@@ -201,7 +200,6 @@ Page({
           if (USE_MOCK_DATA) {
             wx.showToast({ title: '投票成功（模拟）', icon: 'success' })
             
-            // 更新状态：标记为已投票
             const { voteDetail } = this.data
             voteDetail.hasVoted = true
             
@@ -220,7 +218,6 @@ Page({
             await post(`/api/vote/${voteId}/submit`, { options: selectedOptions })
             wx.showToast({ title: '投票成功', icon: 'success' })
             
-            // 更新状态：标记为已投票
             const { voteDetail } = this.data
             voteDetail.hasVoted = true
             
