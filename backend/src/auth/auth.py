@@ -105,7 +105,11 @@ async def wechat_login(request: WechatLoginRequest, db: Session = Depends(get_db
     
     # 1. 调用微信 API 换取 openid
     try:
-        async with httpx.AsyncClient() as client:
+        # 使用 httpx 并禁用 SSL 验证（微信云托管环境需要）
+        async with httpx.AsyncClient(
+            timeout=10.0,
+            verify=False
+        ) as client:
             response = await client.get(
                 "https://api.weixin.qq.com/sns/jscode2session",
                 params={
@@ -113,13 +117,11 @@ async def wechat_login(request: WechatLoginRequest, db: Session = Depends(get_db
                     "secret": settings.WECHAT_APP_SECRET,
                     "js_code": request.code,
                     "grant_type": "authorization_code"
-                },
-                timeout=10.0
+                }
             )
-            response.raise_for_status()
             wechat_data = response.json()
             
-            if "errcode" in wechat_data:
+            if "errcode" in wechat_data and wechat_data["errcode"] != 0:
                 logger.error(f"微信登录失败：{wechat_data}")
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
