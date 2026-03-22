@@ -126,19 +126,25 @@ Page({
 
   toggleOption(e) {
     const { selectedOptions, voteDetail } = this.data
-    const { option } = e.currentTarget.dataset
-    const index = selectedOptions.indexOf(option)
+    const clickedOption = e.currentTarget.dataset.option
+    
+    console.log('点击选项:', clickedOption)
+    console.log('当前已选:', selectedOptions)
+    
+    const index = selectedOptions.indexOf(clickedOption)
     
     if (index > -1) {
       // 取消选择
       selectedOptions.splice(index, 1)
+      console.log('取消选择:', clickedOption)
     } else {
       // 添加选择
       if (voteDetail && voteDetail.max_votes && selectedOptions.length >= voteDetail.max_votes) {
         wx.showToast({ title: `最多选择${voteDetail.max_votes}项`, icon: 'none' })
         return
       }
-      selectedOptions.push(option)
+      selectedOptions.push(clickedOption)
+      console.log('添加选择:', clickedOption)
     }
     
     // 检查是否可以提交
@@ -146,7 +152,14 @@ Page({
     const maxVotes = voteDetail ? voteDetail.max_votes : 1
     const canSubmit = selectedOptions.length >= minVotes && selectedOptions.length <= maxVotes
     
-    this.setData({ selectedOptions, canSubmit })
+    console.log('更新后的已选:', selectedOptions)
+    console.log('是否可以提交:', canSubmit)
+    
+    // 强制更新视图
+    this.setData({ 
+      selectedOptions: [...selectedOptions],
+      canSubmit 
+    })
   },
 
   async submitVote() {
