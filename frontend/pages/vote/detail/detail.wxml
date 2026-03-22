@@ -1,107 +1,35 @@
 <!--pages/vote/detail/detail.wxml-->
 <view class="container">
-  <!-- 投票信息 -->
   <view class="vote-card">
     <view class="vote-header">
       <text class="vote-title">{{voteDetail.title}}</text>
-      <text class="vote-status {{voteDetail.status}}">{{voteDetail.status === 'active' ? '进行�? : '已结�?}}</text>
+      <text class="vote-status">{{voteDetail.statusText}}</text>
     </view>
-
-    <view class="vote-desc">{{voteDetail.description}}</view>
-
     <view class="vote-info-row">
-      <text class="info-label">📅 开始时间：</text>
-      <text class="info-value">{{voteDetail.start_time | formatDate}}</text>
+      <text class="info-label">开始时间：</text>
+      <text class="info-value">{{voteDetail.startTimeText}}</text>
     </view>
-
     <view class="vote-info-row">
-      <text class="info-label">📅 结束时间�?/text>
-      <text class="info-value">{{voteDetail.end_time | formatDate}}</text>
+      <text class="info-label">结束时间：</text>
+      <text class="info-value">{{voteDetail.endTimeText}}</text>
     </view>
-
     <view class="vote-info-row">
-      <text class="info-label">📊 已投票：</text>
-      <text class="info-value highlight">{{voteDetail.total_votes}}�?/text>
-    </view>
-
-    <view class="vote-info-row">
-      <text class="info-label">📝 投票类型�?/text>
-      <text class="info-value">{{voteDetail.vote_type === 'single' ? '单�? : '多�?}}（{{voteDetail.min_votes}}-{{voteDetail.max_votes}}票）</text>
+      <text class="info-label">已投票：</text>
+      <text class="info-value">{{voteDetail.totalVotes}}票</text>
     </view>
   </view>
-
-  <!-- 投票选项 -->
-  <view class="options-card" wx:if="{{voteDetail.status === 'active' && !voteDetail.has_voted}}">
-    <view class="card-title">请选择您的意见</view>
-
+  <view class="options-card" wx:if="{{voteDetail.status=='active' && !voteDetail.hasVoted}}">
     <view class="options-list">
-      <view 
-        class="option-item {{selectedOptions.includes(item) ? 'selected' : ''}}" 
-        wx:for="{{voteDetail.options}}" 
-        wx:key="*this"
-        bindtap="toggleOption"
-        data-option="{{item}}"
-      >
-        <view class="option-radio">
-          <view class="radio-dot {{selectedOptions.includes(item) ? 'checked' : ''}}"></view>
-        </view>
+      <view class="option-item" wx:for="{{voteDetail.options}}" wx:key="*this" bindtap="toggleOption">
         <text class="option-text">{{item}}</text>
       </view>
     </view>
-
-    <view class="selected-count">已选择 {{selectedOptions.length}} 项（{{voteDetail.min_votes}}-{{voteDetail.max_votes}}�?/view>
-
-    <button 
-      class="submit-btn" 
-      bindtap="submitVote"
-      disabled="{{!canSubmit}}"
-    >
-      提交投票
-    </button>
+    <button class="submit-btn" bindtap="submitVote">提交投票</button>
   </view>
-
-  <!-- 已投票提�?-->
-  <view class="voted-card" wx:if="{{voteDetail.has_voted}}">
-    <view class="voted-icon">�?/view>
-    <text class="voted-text">您已投过�?/text>
-    <text class="voted-desc">每个业主只能投票一�?/text>
-    <button class="view-result-btn" bindtap="viewResult">查看结果</button>
-  </view>
-
-  <!-- 投票结果 -->
   <view class="result-card" wx:if="{{showResult}}">
-    <view class="card-title">📊 投票结果</view>
-
-    <view class="result-list">
-      <view class="result-item" wx:for="{{voteResults}}" wx:key="option">
-        <text class="result-option">{{item.option}}</text>
-        <view class="result-bar">
-          <view class="result-fill" style="width: {{item.percentage * 100}}%"></view>
-        </view>
-        <view class="result-stats">
-          <text class="result-count">{{item.count}}�?/text>
-          <text class="result-percent">{{item.percentageText}}%</text>
-        </view>
-      </view>
+    <view class="result-item" wx:for="{{voteResults}}" wx:key="option">
+      <text class="result-option">{{item.option}}</text>
+      <text class="result-count">{{item.count}}票 ({{item.percentageText}}%)</text>
     </view>
-
-    <view class="result-summary">
-      <text class="summary-label">总投票数�?/text>
-      <text class="summary-value">{{voteResults.total_votes}}�?/text>
-    </view>
-
-    <view class="result-summary" wx:if="{{voteResults.passed !== null}}">
-      <text class="summary-label">投票结果�?/text>
-      <text class="summary-value {{voteResults.passed ? 'pass' : 'fail'}}">
-        {{voteResults.passed ? '�?已通过' : '�?未通过'}}
-      </text>
-    </view>
-  </view>
-
-  <!-- 委托投票 -->
-  <view class="proxy-card" wx:if="{{voteDetail.status === 'active' && !voteDetail.has_voted}}">
-    <view class="card-title">👥 委托投票</view>
-    <text class="proxy-desc">如无法参与投票，可委托其他业主代为投�?/text>
-    <button class="proxy-btn" bindtap="assignProxy">设置委托�?/button>
   </view>
 </view>
