@@ -24,7 +24,6 @@ Page({
     const { voteId } = this.data
     
     if (USE_MOCK_DATA) {
-      // 使用模拟数据
       const res = {
         id: voteId,
         title: '关于聘请新物业公司的投票',
@@ -126,20 +125,27 @@ Page({
   },
 
   toggleOption(e) {
-    const { selectedOptions } = this.data
+    const { selectedOptions, voteDetail } = this.data
     const { option } = e.currentTarget.dataset
     const index = selectedOptions.indexOf(option)
+    
     if (index > -1) {
+      // 取消选择
       selectedOptions.splice(index, 1)
     } else {
-      const { voteDetail } = this.data
-      if (voteDetail.max_votes && selectedOptions.length >= voteDetail.max_votes) {
+      // 添加选择
+      if (voteDetail && voteDetail.max_votes && selectedOptions.length >= voteDetail.max_votes) {
         wx.showToast({ title: `最多选择${voteDetail.max_votes}项`, icon: 'none' })
         return
       }
       selectedOptions.push(option)
     }
-    const canSubmit = selectedOptions.length >= voteDetail.min_votes && selectedOptions.length <= voteDetail.max_votes
+    
+    // 检查是否可以提交
+    const minVotes = voteDetail ? voteDetail.min_votes : 1
+    const maxVotes = voteDetail ? voteDetail.max_votes : 1
+    const canSubmit = selectedOptions.length >= minVotes && selectedOptions.length <= maxVotes
+    
     this.setData({ selectedOptions, canSubmit })
   },
 
