@@ -48,7 +48,11 @@ class WeChatAPI:
         """
         url = f"{cls.BASE_URL}{endpoint}"
         
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        # 微信云托管环境：禁用 SSL 验证
+        async with httpx.AsyncClient(
+            timeout=30.0,
+            verify=False
+        ) as client:
             response = await client.request(
                 method=method,
                 url=url,
