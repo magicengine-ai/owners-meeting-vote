@@ -15,11 +15,9 @@ Page({
   },
 
   onShow: function() {
-    // 每次显示时刷新数据
     this.refreshData();
   },
 
-  // 加载用户信息
   loadUserInfo: function() {
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo) {
@@ -27,9 +25,7 @@ Page({
     }
   },
 
-  // 加载公告
   loadNotices: function() {
-    // TODO: 从 API 加载公告
     this.setData({
       notices: [
         {
@@ -48,9 +44,7 @@ Page({
     });
   },
 
-  // 加载进行中的投票
   loadActiveVotes: function() {
-    // TODO: 从 API 加载投票
     this.setData({
       activeVotes: [
         {
@@ -65,9 +59,7 @@ Page({
     });
   },
 
-  // 加载即将召开的会议
   loadUpcomingMeetings: function() {
-    // TODO: 从 API 加载会议
     this.setData({
       upcomingMeetings: [
         {
@@ -80,47 +72,52 @@ Page({
     });
   },
 
-  // 刷新数据
   refreshData: function() {
     this.loadNotices();
     this.loadActiveVotes();
     this.loadUpcomingMeetings();
   },
 
-  // 下拉刷新
   onPullDownRefresh: function() {
     this.refreshData();
     wx.stopPullDownRefresh();
   },
 
-  // 跳转到公告详情
+  goToNoticeList: function() {
+    wx.showToast({ title: '功能开发中', icon: 'none' });
+  },
+
   goToNoticeDetail: function(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({
-      url: `/pages/notice/detail?id=${id}`
+    wx.showToast({ title: '功能开发中', icon: 'none' });
+  },
+
+  goToVoteList: function() {
+    wx.switchTab({
+      url: '/pages/vote/list/list'
     });
   },
 
-  // 跳转到投票详情
   goToVoteDetail: function(e) {
     const id = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: `/pages/vote/detail?id=${id}`
+      url: '/pages/vote/detail/detail?vote_id=' + id
     });
   },
 
-  // 跳转到会议详情
+  goToMeetingList: function() {
+    wx.switchTab({
+      url: '/pages/meeting/list/list'
+    });
+  },
+
   goToMeetingDetail: function(e) {
-    const id = e.currentTarget.dataset.id;
-    wx.navigateTo({
-      url: `/pages/meeting/detail?id=${id}`
-    });
+    wx.showToast({ title: '功能开发中', icon: 'none' });
   },
 
-  // 去认证
   goToAuth: function() {
     wx.navigateTo({
-      url: '/pages/auth/auth'
+      url: '/pages/auth/login/login'
     });
   }
 })
