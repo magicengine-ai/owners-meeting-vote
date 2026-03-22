@@ -24,15 +24,15 @@
     <view class="options-list">
       <view 
         wx:for="{{voteDetail.options}}" 
-        wx:key="*this" 
-        class="option-item {{selectedOptions.indexOf(item) > -1 ? 'selected' : ''}}"
+        wx:key="text" 
+        class="option-item {{item.selected ? 'selected' : ''}}"
         bindtap="toggleOption"
-        data-option="{{item}}"
+        data-option="{{item.text}}"
       >
         <view class="option-radio">
-          <view class="radio-dot {{selectedOptions.indexOf(item) > -1 ? 'checked' : ''}}"></view>
+          <view class="radio-dot {{item.selected ? 'checked' : ''}}"></view>
         </view>
-        <text class="option-text">{{item}}</text>
+        <text class="option-text">{{item.text}}</text>
       </view>
     </view>
     <view class="selected-count">已选择 {{selectedOptions.length}} 项</view>

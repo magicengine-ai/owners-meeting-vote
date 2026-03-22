@@ -39,6 +39,13 @@ Page({
         options: ['同意', '反对', '弃权'],
         total_households: 500
       }
+      
+      // 为每个选项添加选中状态
+      const optionsWithSelected = res.options.map(opt => ({
+        text: opt,
+        selected: false
+      }))
+      
       this.setData({
         voteDetail: {
           ...res,
@@ -47,7 +54,7 @@ Page({
           endTimeText: res.end_time ? this.formatDate(res.end_time) : '',
           totalVotes: res.total_votes || 0,
           hasVoted: res.has_voted || false,
-          options: res.options || []
+          options: optionsWithSelected
         },
         showResult: res.has_voted || res.status !== 'active'
       })
@@ -56,6 +63,11 @@ Page({
     
     try {
       const res = await get(`/api/vote/detail/${voteId}`)
+      const optionsWithSelected = (res.options || []).map(opt => ({
+        text: opt,
+        selected: false
+      }))
+      
       this.setData({
         voteDetail: {
           ...res,
@@ -64,7 +76,7 @@ Page({
           endTimeText: res.end_time ? this.formatDate(res.end_time) : '',
           totalVotes: res.total_votes || 0,
           hasVoted: res.has_voted || false,
-          options: res.options || []
+          options: optionsWithSelected
         },
         showResult: res.has_voted || res.status !== 'active'
       })
@@ -125,40 +137,56 @@ Page({
   },
 
   toggleOption(e) {
-    const { selectedOptions, voteDetail } = this.data
-    const clickedOption = e.currentTarget.dataset.option
+    const clickedText = e.currentTarget.dataset.option
+    const { voteDetail, selectedOptions } = this.data
     
-    console.log('点击选项:', clickedOption)
-    console.log('当前已选:', selectedOptions)
+    console.log('点击选项:', clickedText)
     
-    const index = selectedOptions.indexOf(clickedOption)
+    // 找到点击的选项在数组中的索引
+    const optionIndex = voteDetail.options.findIndex(opt => opt.text === clickedText)
+    if (optionIndex === -1) return
     
-    if (index > -1) {
-      // 取消选择
-      selectedOptions.splice(index, 1)
-      console.log('取消选择:', clickedOption)
+    const option = voteDetail.options[optionIndex]
+    const isSelected = option.selected
+    
+    if (isSelected) {
+      // 取消选中
+      voteDetail.options[optionIndex].selected = false
+      const idx = selectedOptions.indexOf(clickedText)
+      if (idx > -1) selectedOptions.splice(idx, 1)
     } else {
-      // 添加选择
-      if (voteDetail && voteDetail.max_votes && selectedOptions.length >= voteDetail.max_votes) {
+      // 选中
+      if (voteDetail.max_votes && selectedOptions.length >= voteDetail.max_votes) {
         wx.showToast({ title: `最多选择${voteDetail.max_votes}项`, icon: 'none' })
         return
       }
-      selectedOptions.push(clickedOption)
-      console.log('添加选择:', clickedOption)
+      
+      // 单选：先取消所有选中
+      if (voteDetail.max_votes === 1) {
+        voteDetail.options.forEach((opt, i) => {
+          voteDetail.options[i].selected = false
+        })
+        selectedOptions.length = 0
+      }
+      
+      // 选中当前
+      voteDetail.options[optionIndex].selected = true
+      selectedOptions.push(clickedText)
     }
     
     // 检查是否可以提交
-    const minVotes = voteDetail ? voteDetail.min_votes : 1
-    const maxVotes = voteDetail ? voteDetail.max_votes : 1
+    const minVotes = voteDetail.min_votes || 1
+    const maxVotes = voteDetail.max_votes || 1
     const canSubmit = selectedOptions.length >= minVotes && selectedOptions.length <= maxVotes
     
-    console.log('更新后的已选:', selectedOptions)
-    console.log('是否可以提交:', canSubmit)
+    console.log('已选:', selectedOptions)
+    console.log('选项状态:', voteDetail.options)
     
-    // 强制更新视图
-    this.setData({ 
+    // 更新视图
+    this.setData({
+      voteDetail: { ...voteDetail },
       selectedOptions: [...selectedOptions],
-      canSubmit 
+      canSubmit
     })
   },
 
