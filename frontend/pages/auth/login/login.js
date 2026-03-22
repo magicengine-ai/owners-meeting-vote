@@ -149,24 +149,37 @@ Page({
    * 微信登录
    */
   async wechatLogin() {
+    console.log('====== 开始微信登录 ======')
+    
     try {
-      wx.showLoading({ title: '登录中...' })
+      console.log('1. 显示加载提示')
+      wx.showLoading({ title: '登录中...', mask: true })
       
+      console.log('2. 调用 wx.login 获取 code')
       // 1. 获取微信登录 code
       const loginRes = await wx.login({
         timeout: 10000
       })
       
-      if (!loginRes.code) {
+      console.log('wx.login 返回:', loginRes)
+      
+      if (!loginRes || !loginRes.code) {
+        console.error('wx.login 返回为空')
         throw new Error('微信登录失败')
       }
       
+      console.log('3. 获取到 code:', loginRes.code.substring(0, 10) + '...')
+      
       // 2. 调用后端登录接口
+      console.log('4. 调用后端登录接口')
       const res = await post('/api/auth/wechat/login', {
         code: loginRes.code
       })
       
+      console.log('后端返回:', res)
+      
       if (res.access_token) {
+        console.log('5. 保存 token 和用户信息')
         // 3. 保存 token 和用户信息
         setToken(res.access_token)
         setUserInfo({
@@ -177,6 +190,7 @@ Page({
           is_verified: res.is_verified
         })
         
+        console.log('6. 登录成功，跳转到首页')
         wx.showToast({
           title: '登录成功',
           icon: 'success'
@@ -190,12 +204,13 @@ Page({
         }, 1500)
       }
     } catch (error) {
-      console.error('微信登录失败:', error)
+      console.error('====== 微信登录失败 ======', error)
       wx.showToast({
         title: error.message || '登录失败，请重试',
         icon: 'none'
       })
     } finally {
+      console.log('7. 隐藏加载提示')
       wx.hideLoading()
     }
   },
